@@ -18,8 +18,11 @@ clean:
 add:
 	git add .
 
-push: add
+commit: add
 	git commit -m "Automatic"
+
+push: commit
+	git push
 
 cleanobj: 
 	rm -rf *.o
