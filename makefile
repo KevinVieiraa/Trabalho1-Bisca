@@ -15,6 +15,12 @@ valgrind: trab1
 clean: 
 	rm -rf *.o trab1
 
+add:
+	git add .
+
+push: add
+	git commit -m "Automatic"
+
 cleanobj: 
 	rm -rf *.o
 
