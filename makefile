@@ -1,22 +1,22 @@
-all: trab
+CC=gcc
+CFLAGS=-I. -Wall  -lm
+DEPS = lib/graficos.h
+OBJ = trab1.o lib/graficos.o
 
-trab: trab1.c lib/graficos.h graficos.o 
-	gcc -o trab1 trab1.c graficos.o -lm
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-graficos.o: lib/graficos.c lib/graficos.h
-	gcc -c lib/graficos.c
+trab1: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
 
-run: trab1
-	./trab1
+clean: clib
+	rm -f *.o
+
+clib:
+	rm -f lib/*o
 	
 valgrind: trab1
 	valgrind -v ./trab1
-
-clean: 
-	rm -rf *.o trab1
-
-cleanobj: 
-	rm -rf *.o
 	
 add:
 	git add .
@@ -26,6 +26,7 @@ commit: add
 
 push: commit
 	git push
+
 
 
 

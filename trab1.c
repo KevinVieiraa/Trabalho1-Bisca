@@ -164,7 +164,7 @@ tCarta* RetiraCarta(tListaCartas *cartas, int pos)
             carta -> proximo = NULL;
             if(tamanho == 1)
             {
-                cartas -> ultimo == NULL;
+                cartas -> ultimo = NULL;
             }
         }
         else
@@ -215,12 +215,26 @@ void LiberaLista(tListaCartas *cartas)
     free(cartas);
 }
 
+void ImprimeChat()
+{
+    CursorPosicao(1, ALTURA + 2);
+    printf("O jogador (1) sacou uma carta.");
+    CursorPosicao(1, ALTURA + 3);
+    printf("O jogador (2) sacou uma carta.");
+    CursorPosicao(1, ALTURA + 4);
+    printf("O jogador (3) sacou uma carta.");
+    CursorPosicao(1, ALTURA + 5);
+    printf("O jogador (4) sacou uma carta.");
+    CursorPosicao(1, ALTURA + 6);
+    printf("O jogador (1) jogou A de Copas.");
+
+}
 
 int main()
 {
     tListaCartas *baralho = NovaListaCartas();
     int estado = 0;
-    char opcao;
+    char opcao, chat[5][100];
 
 	srand(time(NULL));
     
@@ -228,13 +242,13 @@ int main()
 	
 	//printf("Baralho:\n");
 	//ImprimeLista(baralho);
-	int tam = TamLista(baralho);
+	//int tam = TamLista(baralho);
 	//printf("Tamanho: %d\n", tam);
 	
 	//printf("Baralho embaralhado:\n");
 	Embaralha(baralho);
 	//ImprimeLista(baralho);
-	tam = TamLista(baralho);
+	//tam = TamLista(baralho);
 	//printf("Tamanho: %d\n", tam);
 	/*
 	printf("Retirou a carta:\n");
@@ -284,7 +298,7 @@ int main()
             opcao = '-';
             DesenhaLayout(LARGURA, ALTURA, 0, 0);
             DesenhaItensConfig();
-            while(opcao <= '0' || opcao >= '3')
+            while(opcao != '2' && opcao != '4')
             {
                 ApagaLinha(ALTURA + 1, 100);
                 printf(">Jogadores: ");
@@ -292,7 +306,7 @@ int main()
             }
 
             opcao = '-';
-            while(opcao <= '0' || opcao >= '3')
+            while(opcao != '1' && opcao != '2')
             {
                 ApagaLinha(ALTURA + 2, 100);
                 printf(">Dificuldade: ");
@@ -328,6 +342,7 @@ int main()
             {   
                 printf(">");
                 getchar();
+                ImprimeChat();
                 ApagaLinha(28, 100);
             }
             
