@@ -302,10 +302,5 @@ void DesenhaItensJogo()
 
     DesenhaCaixa(2, 7, 7, 5);
     DesenhaCaixa(2, 12, 7, 5);
-
-    DesenhaCaixa(21, 5, 7, 5);    
-    DesenhaCaixa(28, 5, 7, 5);    
-    DesenhaCaixa(35, 5, 7, 5);    
-    DesenhaCaixa(42, 5, 7, 5);    
 }
 

@@ -141,7 +141,26 @@ int TamLista(tListaCartas *cartas)
 	return i;
 }
 
+char* RetornaNaipe(int naipe)
+{
+    switch(naipe)
+    {
+        case OUROS:
+            return SIMBOLOOUROS;
+            break;
+        case PAUS:
+            return SIMBOLOPAUS;
+            break;
+        case COPAS:
+            return SIMBOLOCOPAS;
+            break;
+        case ESPADAS:
+            return SIMBOLOESPADAS;
+            break;
+    }
 
+    return "E";
+}
 void ImprimeCarta(tCarta carta)
 {
     char naipe[4];
@@ -315,24 +334,30 @@ void ApagaArea(int xInic, int yInic, int tamX, int tamY)
     }
 }
 
-void ImprimeMao(tListaCartas *mao)
+void DesenhaMao(tListaCartas *mao)
 {
     tCarta *carta1, *carta2, *carta3;
     int tam = TamLista(mao);
     
-    ApagaArea(25, 15, 21, 5);
+    ApagaArea(25, 14, 21, 6);
 
     switch(tam)
     {
         case 1:
             carta1 = mao -> lista;
             DesenhaCarta(carta1 -> naipe, carta1 -> valor, 32, 15);
+            CursorPosicao(35, 14);
+            printf("1");
             break;
         case 2:
             carta1 = mao -> lista;
             carta2 = carta1 -> proximo;
             DesenhaCarta(carta1 -> naipe, carta1 -> valor, 28, 15);
             DesenhaCarta(carta2 -> naipe, carta2 -> valor, 35, 15);
+            CursorPosicao(31, 14);
+            printf("1");
+            CursorPosicao(38, 14);
+            printf("2");
             break;
         case 3:
             carta1 = mao -> lista;
@@ -341,7 +366,72 @@ void ImprimeMao(tListaCartas *mao)
             DesenhaCarta(carta1 -> naipe, carta1 -> valor, 25, 15);
             DesenhaCarta(carta2 -> naipe, carta2 -> valor, 32, 15);
             DesenhaCarta(carta3 -> naipe, carta3 -> valor, 39, 15);
+            CursorPosicao(28, 14);
+            printf("1");
+            CursorPosicao(35, 14);
+            printf("2");
+            CursorPosicao(42, 14);
+            printf("3");
             break;
+    }
+}
+
+void DesenhaMesa(tListaCartas *monte, int jogadores)
+{
+    tCarta *carta1, *carta2, *carta3, *carta4;
+    int tam = TamLista(monte);
+
+    ApagaArea(21, 5, 28, 5);
+
+    if(jogadores == 2)
+    {
+        switch(tam)
+        {
+            case 1:
+                carta1 = monte -> lista;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, 28, 5);
+                break;
+            case 2:
+                carta1 = monte -> lista;
+                carta2 = carta1 -> proximo;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, 28, 5);
+                DesenhaCarta(carta1 -> naipe, carta2 -> valor, 35, 5);
+                break;
+        }
+    }
+    else if(jogadores == 4)
+    {
+        switch(tam)
+        {
+            case 1:
+                carta1 = monte -> lista;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, 21, 5);
+                break;
+            case 2:
+                carta1 = monte -> lista;
+                carta2 = carta1 -> proximo;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, 21, 5);
+                DesenhaCarta(carta2 -> naipe, carta2 -> valor, 28, 5);
+                break;
+            case 3:
+                carta1 = monte -> lista;
+                carta2 = carta1 -> proximo;
+                carta3 = carta2 -> proximo;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, 21, 5);
+                DesenhaCarta(carta2 -> naipe, carta2 -> valor, 28, 5);
+                DesenhaCarta(carta3 -> naipe, carta3 -> valor, 35, 5);
+                break;
+            case 4: 
+                carta1 = monte -> lista;
+                carta2 = carta1 -> proximo;
+                carta3 = carta2 -> proximo;
+                carta4 = carta3 -> proximo;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, 21, 5);
+                DesenhaCarta(carta2 -> naipe, carta2 -> valor, 28, 5);
+                DesenhaCarta(carta3 -> naipe, carta3 -> valor, 35, 5);
+                DesenhaCarta(carta4 -> naipe, carta4 -> valor, 42, 5);
+                break;
+        }
     }
 }
 
@@ -354,27 +444,6 @@ int main()
 
 	srand(time(NULL));
 	
-	//printf("Baralho:\n");
-	//ImprimeLista(baralho);
-	//int tam = TamLista(baralho);
-	//printf("Tamanho: %d\n", tam);
-	
-	//printf("Baralho embaralhado:\n");
-	//ImprimeLista(baralho);
-	//tam = TamLista(baralho);
-	//printf("Tamanho: %d\n", tam);
-	/*
-	printf("Retirou a carta:\n");
-	tCarta *retirada;
-	retirada = RetiraCarta(baralho, 3);
-	ImprimeCarta(*retirada);
-	
-	printf("Baralho:\n");
-	ImprimeLista(baralho);
-	tam = TamLista(baralho);
-	printf("Tamanho: %d\n", tam);
-    */
-    getchar();
     Espaco(ALTURA + 6);
     //[O jogo ocorre dentro de um laço que alterna entre "estados"]
     while(1)
@@ -385,7 +454,6 @@ int main()
             opcao = '-';
             DesenhaLayout(LARGURA, ALTURA, 0, 0);
             DesenhaItensMenu();
-            
             while( opcao != '1' && opcao != '2' && opcao != '3' )
             {
                 printf(">");
@@ -477,31 +545,40 @@ int main()
                 jogador4 = InicializaJogador(mesa -> baralho);
             }
 
-            
-
             while(estado == EJOGO)
             {   
                 printf(">");
                 char comando = getchar();
-
                 switch(comando)
                 {
                     case '1':
                         if(TamLista(jogador1 -> mao) >= 1)
                         {
-                            InsereCarta(mesa -> monte, RetiraCarta(jogador1 -> mao, 1));
+                            tCarta *retirada = RetiraCarta(jogador1 -> mao, 1);
+                            char tmp[100];
+                            sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
+                            AtualizaChat(chat, tmp);
+                            InsereCarta(mesa -> monte, retirada);
                         }
                         break;
                     case '2':
                         if(TamLista(jogador1 -> mao) >= 2)
                         {
-                            InsereCarta(mesa -> monte, RetiraCarta(jogador1 -> mao, 2));
+                            tCarta *retirada = RetiraCarta(jogador1 -> mao, 2);
+                            char tmp[100];
+                            sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
+                            AtualizaChat(chat, tmp);
+                            InsereCarta(mesa -> monte, retirada);
                         }
                         break;
                     case '3':
                         if(TamLista(jogador1 -> mao) >= 3)
                         {
-                            InsereCarta(mesa -> monte, RetiraCarta(jogador1 -> mao, 3));
+                            tCarta *retirada = RetiraCarta(jogador1 -> mao, 3);
+                            char tmp[100];
+                            sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
+                            AtualizaChat(chat, tmp);
+                            InsereCarta(mesa -> monte, retirada);
                         }
                         break;
                     case 'F':
@@ -513,8 +590,10 @@ int main()
                         break;
                 }
 
+                
                 ImprimeChat(chat);
-                ImprimeMao(jogador1 -> mao);
+                DesenhaMao(jogador1 -> mao);
+                DesenhaMesa(mesa -> monte, jogadores);
                 ApagaLinha(28, 100);
             }
 
