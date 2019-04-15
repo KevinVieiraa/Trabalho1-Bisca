@@ -299,9 +299,6 @@ void DesenhaItensJogo()
     AtualizaPontuacao();
     DesenhaIndicesCartas();
 
-    DesenhaCaixa(25, 15, 7, 5);
-    DesenhaCaixa(32, 15, 7, 5);
-    DesenhaCaixa(39, 15, 7, 5);
 
     DesenhaCaixa(2, 7, 7, 5);
     DesenhaCaixa(2, 12, 7, 5);

@@ -39,6 +39,20 @@ typedef struct listaCartas
     Endereco* ultimo;
 }tListaCartas;
 
+typedef struct jogador
+{
+    tListaCartas *mao;
+    tListaCartas *pontosCartas;
+    int pontos;
+}tJogador;
+
+typedef struct mesa
+{
+    tListaCartas *baralho;
+    tListaCartas *monte;
+    tCarta *corte;
+}tMesa;
+
 tCarta* NovaCarta(int valor, int naipe);
 tListaCartas* NovaListaCartas();
 void InsereCarta(tListaCartas  *cartas, tCarta *carta);
@@ -215,30 +229,130 @@ void LiberaLista(tListaCartas *cartas)
     free(cartas);
 }
 
-void ImprimeChat()
+void ImprimeChat(char chat[5][100])
 {
     CursorPosicao(1, ALTURA + 2);
-    printf("O jogador (1) sacou uma carta.");
+    printf("%s", chat[0]);
     CursorPosicao(1, ALTURA + 3);
-    printf("O jogador (2) sacou uma carta.");
+    printf("%s", chat[1]);
     CursorPosicao(1, ALTURA + 4);
-    printf("O jogador (3) sacou uma carta.");
+    printf("%s", chat[2]);
     CursorPosicao(1, ALTURA + 5);
-    printf("O jogador (4) sacou uma carta.");
+    printf("%s", chat[3]);
     CursorPosicao(1, ALTURA + 6);
-    printf("O jogador (1) jogou A de Copas.");
+    printf("%s", chat[4]);
+}
 
+void AtualizaChat(char chat[5][100], char string[100])
+{
+    for(int i = 0; i < 4; i++ )
+    {
+        strcpy(chat[i], chat[i+1]);
+    }
+    strcpy(chat[4], string);
+}
+
+void Saca(tListaCartas *baralho, tListaCartas *maoDestino)
+{
+    InsereCarta(maoDestino, RetiraCarta(baralho, 1));
+}
+
+void JogaMesa()
+{
+
+}
+
+tJogador* InicializaJogador(tListaCartas *baralho)
+{
+    tJogador *novoJogador = (tJogador*)malloc(sizeof(tJogador));
+    novoJogador -> mao = NovaListaCartas();
+    novoJogador -> pontosCartas = NovaListaCartas();
+    novoJogador -> pontos = 0;
+
+    Saca(baralho, novoJogador -> mao);
+    Saca(baralho, novoJogador -> mao);
+    Saca(baralho, novoJogador -> mao);
+
+    return novoJogador;
+}
+
+void LiberaJogador(tJogador *jogador)
+{
+    LiberaLista(jogador -> mao);
+    LiberaLista(jogador -> pontosCartas);
+    free(jogador);
+}
+
+tMesa* InicializaMesa()
+{
+    tMesa *novaMesa = (tMesa*)malloc(sizeof(tMesa));
+    novaMesa -> baralho = NovaListaCartas();
+    novaMesa -> monte = NovaListaCartas();
+    novaMesa -> corte = NovaCarta(4, 4);
+
+    InicializaBaralho(novaMesa -> baralho);
+
+    return novaMesa;
+}
+
+void LiberaMesa(tMesa *mesa)
+{
+    LiberaLista(mesa -> baralho);
+    LiberaLista(mesa -> monte);
+    free(mesa -> corte);
+    free(mesa);
+}
+
+void ApagaArea(int xInic, int yInic, int tamX, int tamY)
+{
+    for(int i = xInic; i < xInic + tamX; i++)
+    {
+        for(int j = yInic; j < yInic + tamY; j++)
+        {
+            CursorPosicao(i, j);
+            printf(" ");
+        }
+    }
+}
+
+void ImprimeMao(tListaCartas *mao)
+{
+    tCarta *carta1, *carta2, *carta3;
+    int tam = TamLista(mao);
+    
+    ApagaArea(25, 15, 21, 5);
+
+    switch(tam)
+    {
+        case 1:
+            carta1 = mao -> lista;
+            DesenhaCarta(carta1 -> naipe, carta1 -> valor, 32, 15);
+            break;
+        case 2:
+            carta1 = mao -> lista;
+            carta2 = carta1 -> proximo;
+            DesenhaCarta(carta1 -> naipe, carta1 -> valor, 28, 15);
+            DesenhaCarta(carta2 -> naipe, carta2 -> valor, 35, 15);
+            break;
+        case 3:
+            carta1 = mao -> lista;
+            carta2 = carta1 -> proximo;
+            carta3 = carta2 -> proximo;
+            DesenhaCarta(carta1 -> naipe, carta1 -> valor, 25, 15);
+            DesenhaCarta(carta2 -> naipe, carta2 -> valor, 32, 15);
+            DesenhaCarta(carta3 -> naipe, carta3 -> valor, 39, 15);
+            break;
+    }
 }
 
 int main()
 {
-    tListaCartas *baralho = NovaListaCartas();
-    int estado = 0;
-    char opcao, chat[5][100];
+    tJogador *jogador1, *jogador2, *jogador3, *jogador4;
+    tMesa *mesa;
+    int estado = 0, jogadores;
+    char opcao, chat[5][100] = { {" "}, {" "}, {" "}, {" "}, {" "} };
 
 	srand(time(NULL));
-    
-	InicializaBaralho(baralho);
 	
 	//printf("Baralho:\n");
 	//ImprimeLista(baralho);
@@ -246,7 +360,6 @@ int main()
 	//printf("Tamanho: %d\n", tam);
 	
 	//printf("Baralho embaralhado:\n");
-	Embaralha(baralho);
 	//ImprimeLista(baralho);
 	//tam = TamLista(baralho);
 	//printf("Tamanho: %d\n", tam);
@@ -263,8 +376,10 @@ int main()
     */
     getchar();
     Espaco(ALTURA + 6);
+    //[O jogo ocorre dentro de um laço que alterna entre "estados"]
     while(1)
     {
+        //[Menu inicial do jogo, com opcoes de iniciar jogo, ajuda ou sair]
         if(estado == EMENU)
         {
             opcao = '-';
@@ -281,18 +396,19 @@ int main()
             switch(opcao)
             {
                 case '1':
-                    estado = 1;
+                    estado = ECONFIG;
                     break;
                 case '2':
-                    estado = 2;
+                    estado = EAJUDA;
                     break;
                 case '3':
-                    estado = -1;
+                    estado = ESAIR;
             }
 
             ApagaLinha(ALTURA + 1, 100);
         }
 
+        //[Configuracoes iniciais antes da partida]
         if(estado == ECONFIG)
         {
             opcao = '-';
@@ -303,6 +419,14 @@ int main()
                 ApagaLinha(ALTURA + 1, 100);
                 printf(">Jogadores: ");
                 opcao = getchar();
+                if(opcao == '2')
+                {
+                    jogadores = 2;
+                }
+                if(opcao == '4')
+                {
+                    jogadores = 4;
+                }
             }
 
             opcao = '-';
@@ -311,12 +435,14 @@ int main()
                 ApagaLinha(ALTURA + 2, 100);
                 printf(">Dificuldade: ");
                 opcao = getchar();
+                
             }
             ApagaLinha(ALTURA + 1, 100);
             ApagaLinha(ALTURA + 2, 100);
-            estado = 3;
+            estado = EJOGO;
         }
 
+        //[Instrucoes sobre o jogo]
         if(estado == EAJUDA)
         {
             opcao = '-';
@@ -329,28 +455,83 @@ int main()
                 ApagaLinha(ALTURA + 1, 100);
             }
 
-            estado = 0;
+            estado = EMENU;
             ApagaLinha(ALTURA + 1, 100);
         }
 
+        //[Inicio do jogo]
         if(estado == EJOGO)
         {
             DesenhaLayout(LARGURA, ALTURA, 0, 0);
             DesenhaItensJogo();
             CursorPosicao(0, 28);
-            while(1)
+
+            mesa = InicializaMesa();
+            Embaralha(mesa -> baralho);
+
+            jogador1 = InicializaJogador(mesa -> baralho);
+            jogador2 = InicializaJogador(mesa -> baralho);
+            if(jogadores == 4)
+            {
+                jogador3 = InicializaJogador(mesa -> baralho);
+                jogador4 = InicializaJogador(mesa -> baralho);
+            }
+
+            
+
+            while(estado == EJOGO)
             {   
                 printf(">");
-                getchar();
-                ImprimeChat();
+                char comando = getchar();
+
+                switch(comando)
+                {
+                    case '1':
+                        if(TamLista(jogador1 -> mao) >= 1)
+                        {
+                            InsereCarta(mesa -> monte, RetiraCarta(jogador1 -> mao, 1));
+                        }
+                        break;
+                    case '2':
+                        if(TamLista(jogador1 -> mao) >= 2)
+                        {
+                            InsereCarta(mesa -> monte, RetiraCarta(jogador1 -> mao, 2));
+                        }
+                        break;
+                    case '3':
+                        if(TamLista(jogador1 -> mao) >= 3)
+                        {
+                            InsereCarta(mesa -> monte, RetiraCarta(jogador1 -> mao, 3));
+                        }
+                        break;
+                    case 'F':
+                    case 'f':
+                        estado = ESAIR;
+                        break;
+                    case 'B':
+                    case 'b':
+                        break;
+                }
+
+                ImprimeChat(chat);
+                ImprimeMao(jogador1 -> mao);
                 ApagaLinha(28, 100);
             }
-            
+
+            LiberaJogador(jogador1);
+            LiberaJogador(jogador2);
+            if(jogadores == 4)
+            {
+                LiberaJogador(jogador3);
+                LiberaJogador(jogador4);
+            }
+            LiberaMesa(mesa);
         }
 
+        //[Estado que finaliza o laço e encerra o jogo]
         if(estado == ESAIR)
         {
-            LiberaLista(baralho);
+            Espaco(ALTURA + 6);
             break;
         }
     }
