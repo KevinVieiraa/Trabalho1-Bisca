@@ -206,16 +206,13 @@ void Espaco(int altura)
         printf("\n");
     }
 }
-void AtualizaPontuacao()
+void DesenhaPontuacao(int jogadores)
 {
-    CursorPosicao(LARGURA - 13, ALTURA + 3);
-    printf("P1: 000");
-    CursorPosicao(LARGURA - 13, ALTURA + 4);
-    printf("P2: 000");
-    CursorPosicao(LARGURA - 13, ALTURA + 5);
-    printf("P3: 000");
-    CursorPosicao(LARGURA - 13, ALTURA + 6);
-    printf("P4: 000");
+    for(int i = 1; i <= jogadores; i++)
+    {
+        CursorPosicao(LARGURA - 13, ALTURA + 2 + i);
+        printf("P%d: %d", i, 0);
+    }
 }
 
 
@@ -290,17 +287,16 @@ void ApagaLinha(int linha, int tamanho)
 }
 
 
-void DesenhaItensJogo()
+void DesenhaItensJogo(int jogadores)
 {
     DesenhaLayout(LARGURA - 21, 6, 0, ALTURA + 1);
     DesenhaLayout(20, 6, LARGURA - 20, ALTURA + 1);
     CursorPosicao(LARGURA - 15, ALTURA + 2);
     printf(">PONTUACAO<");
-    AtualizaPontuacao();
-    DesenhaIndicesCartas();
-
-
-    DesenhaCaixa(2, 7, 7, 5);
-    DesenhaCaixa(2, 12, 7, 5);
+    DesenhaPontuacao(jogadores);
+    
+    //DesenhaIndicesCartas();
+    //DesenhaCaixa(2, 7, 7, 5);
+    //DesenhaCaixa(2, 12, 7, 5);
 }
 
