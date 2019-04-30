@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "graficos.h"
+#include "carta.h"
 
 #define PAUS 1
 #define OUROS 2
@@ -199,13 +201,14 @@ void DesenhaCarta(int naipeCarta, int valor, int xInicial, int yInicial)
     printf("%c", valorCarta);
 }
 
-void Espaco(int altura)
+void DesenhaEspaco(int altura)
 {
     for(int i = 0; i <= altura; i++)
     {
         printf("\n");
     }
 }
+
 void DesenhaPontuacao(int jogadores)
 {
     for(int i = 1; i <= jogadores; i++)
@@ -214,7 +217,6 @@ void DesenhaPontuacao(int jogadores)
         printf("P%d: %d", i, 0);
     }
 }
-
 
 void DesenhaIndicesCartas()
 {
@@ -286,7 +288,6 @@ void ApagaLinha(int linha, int tamanho)
     CursorPosicao(0, linha);
 }
 
-
 void DesenhaItensJogo(int jogadores)
 {
     DesenhaLayout(LARGURA - 21, 6, 0, ALTURA + 1);
@@ -294,9 +295,69 @@ void DesenhaItensJogo(int jogadores)
     CursorPosicao(LARGURA - 15, ALTURA + 2);
     printf(">PONTUACAO<");
     DesenhaPontuacao(jogadores);
-    
-    //DesenhaIndicesCartas();
-    //DesenhaCaixa(2, 7, 7, 5);
-    //DesenhaCaixa(2, 12, 7, 5);
+}
+
+char* RetornaNaipe(int naipe)
+{
+    switch(naipe)
+    {
+        case OUROS:
+            return SIMBOLOOUROS;
+            break;
+        case PAUS:
+            return SIMBOLOPAUS;
+            break;
+        case COPAS:
+            return SIMBOLOCOPAS;
+            break;
+        case ESPADAS:
+            return SIMBOLOESPADAS;
+            break;
+    }
+
+    return "E";
+}
+
+
+
+void ApagaArea(int xInic, int yInic, int tamX, int tamY)
+{
+    for(int i = xInic; i < xInic + tamX; i++)
+    {
+        for(int j = yInic; j < yInic + tamY; j++)
+        {
+            CursorPosicao(i, j);
+            printf(" ");
+        }
+    }
+}
+
+void ImprimeChat(char chat[5][50])
+{
+    ApagaArea(1, ALTURA + 2, 50, 1);
+    ApagaArea(1, ALTURA + 3, 50, 1);
+    ApagaArea(1, ALTURA + 4, 50, 1);
+    ApagaArea(1, ALTURA + 5, 50, 1);
+    ApagaArea(1, ALTURA + 6, 50, 1);
+
+    CursorPosicao(1, ALTURA + 2);
+    printf("%s", chat[0]);
+    CursorPosicao(1, ALTURA + 3);
+    printf("%s", chat[1]);
+    CursorPosicao(1, ALTURA + 4);
+    printf("%s", chat[2]);
+    CursorPosicao(1, ALTURA + 5);
+    printf("%s", chat[3]);
+    CursorPosicao(1, ALTURA + 6);
+    printf("%s", chat[4]);
+}
+
+void AtualizaChat(char chat[5][50], char string[50])
+{
+    for(int i = 0; i < 4; i++ )
+    {
+        strcpy(chat[i], chat[i+1]);
+    }
+    strcpy(chat[4], string);
 }
 
