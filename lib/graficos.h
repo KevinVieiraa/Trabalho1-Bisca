@@ -102,9 +102,13 @@ void DesenhaPontuacao(int jogadores);
 */
 void ApagaArea(int xInic, int yInic, int tamX, int tamY);
 
+char** NovoChat();
+
 void ImprimeChat(char chat[5][50]);
 
 void AtualizaChat(char chat[5][50], char string[50]);
 
 void DesenhaMao(tListaCartas *mao, int posX, int posY, char* param);
+
+void DesenhaMesa(tListaCartas *monte);
 #endif

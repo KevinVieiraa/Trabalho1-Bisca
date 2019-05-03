@@ -1,5 +1,5 @@
-#ifndef __JOGADOR_H
-#define __JOGADOR_H
+#ifndef __MESA_H
+#define __MESA_H
 
 typedef struct carta tCarta;
 
@@ -13,10 +13,25 @@ typedef struct jogador
     int id;
 }tJogador;
 
+typedef struct mesa
+{
+    tListaCartas *baralho;
+    tListaCartas *monte;
+    tCarta *corte;
+}tMesa;
+
+
+
 tJogador* InicializaJogador(tListaCartas *baralho, int identificador);
 
 void LiberaJogador(tJogador *jogador);
 
 tCarta* IACartaJogada(tJogador *jogador, int dificuldade);
+
+
+
+tMesa* InicializaMesa();
+
+void LiberaMesa(tMesa *mesa);
 
 #endif

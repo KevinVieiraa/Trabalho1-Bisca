@@ -17,7 +17,6 @@ typedef struct listaCartas
     int tamanho;
 }tListaCartas;
 
-
 tCarta* NovaCarta(int valor, int naipe);
 
 tListaCartas* NovaListaCartas();
@@ -41,5 +40,4 @@ void Embaralha(tListaCartas *cartas);
 void LiberaLista(tListaCartas *cartas);
 
 void Saca(tListaCartas *baralho, tListaCartas *maoDestino);
-
 #endif

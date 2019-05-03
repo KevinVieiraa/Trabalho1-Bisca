@@ -5,8 +5,7 @@
 #include <unistd.h>
 #include "lib/graficos.h"
 #include "lib/carta.h"
-#include "lib/jogador.h"
-#include "lib/mesa.h"
+#include "lib/bisca.h"
 
 #define ESAIR -1
 #define EMENU 0
@@ -35,12 +34,14 @@ int main(int argc, char *argv[])
 {
     tJogador *jogador1, *jogador2, *jogador3, *jogador4;
     tMesa *mesa;
-    int estado = 0, jogadores;
-    char opcao, chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
+    int estado = 0;
+    int jogadores;
+    char opcao;
+    char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
 
 	srand(time(NULL));
 	
-    DesenhaEspaco(ALTURA + 9);//Funcao necessaria para exibicao dos valores do valgrind (desnecessario se nao utilizar valgrind)
+    DesenhaEspaco(ALTURA + 25);//Funcao necessaria para exibicao dos valores do valgrind (desnecessario se nao utilizar valgrind)
 
     /*
     * O jogo ocorre em um loop com condicionais que definem a sequencia 
@@ -163,10 +164,9 @@ int main(int argc, char *argv[])
               
             while(estado == EJOGO)
             {   
-                ApagaLinha(28, 100);
                 printf(">");
                 int jogouCarta = 0; //Sinaliza quando o jogo deve prosseguir a logica, necessario para opcoes diferentes de 1, 2 ou 3
-                while(!jogouCarta)
+                while(!jogouCarta && estado == EJOGO)
                 {
                     char tmp[50]; //Guarda o valor temporario da mensagem a ser exibida no chat
                     tCarta *retirada; //Ponteiro temporario para salvar a carta retirada pelo jogador ou IA
@@ -179,8 +179,8 @@ int main(int argc, char *argv[])
                                 InsereCarta(mesa -> monte, retirada);
                                 jogouCarta = 1;
 
-                                AtualizaChat(chat, tmp);
                                 sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
+                                AtualizaChat(chat, tmp);
                             }
                             else
                             {
@@ -231,14 +231,18 @@ int main(int argc, char *argv[])
                             break;
                         case 'M':
                         case 'm':
+                            sprintf(tmp, "Encerrando partida... Abrindo menu...");
+                            AtualizaChat(chat, tmp);
+                            estado = EMENU;
                             break;
                         case 'S':
                         case 's':
-                            jogouCarta = 1;
+                            sprintf(tmp, "Encerrando programa...");
+                            AtualizaChat(chat, tmp);
                             estado = ESAIR;
                             break;
                     }
-
+                    
                     if(jogouCarta)
                     {
                         retirada = IACartaJogada(jogador2, 1);
@@ -261,20 +265,16 @@ int main(int argc, char *argv[])
                     }
 
                     ImprimeChat(chat);
-                    if(jogadores == 2)
+
+                    DesenhaMao(jogador1 -> mao, 19, 15, "1");
+                    DesenhaMao(jogador2 -> mao, 19, 1, argv[1]);
+                    if(jogadores == 4)
                     {
-                        DesenhaMao(jogador1 -> mao, 28, 15, "1");
-                        DesenhaMao(jogador2 -> mao, 28, 1, argv[1]);
-                    }
-                    else
-                    {
-                        DesenhaMao(jogador1 -> mao, 14, 15, "1");
-                        DesenhaMao(jogador2 -> mao, 44, 15, argv[1]);
-                        DesenhaMao(jogador3 -> mao, 14, 1, argv[1]);
-                        DesenhaMao(jogador4 -> mao, 44, 1, argv[1]);
+                        DesenhaMao(jogador3 -> mao, 49, 15, argv[1]);
+                        DesenhaMao(jogador4 -> mao, 49, 1, argv[1]);
                     }
 
-                    DesenhaMesa(mesa -> monte, jogadores);
+                    DesenhaMesa(mesa -> monte);
                     ApagaLinha(28, 100);
                 }
                 
@@ -288,6 +288,7 @@ int main(int argc, char *argv[])
                 LiberaJogador(jogador4);
             }
             LiberaMesa(mesa);
+            sleep(1);
         }
     }
 

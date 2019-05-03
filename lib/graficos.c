@@ -3,7 +3,6 @@
 #include <string.h>
 #include "graficos.h"
 #include "carta.h"
-#include "jogador.h"
 
 #define PAUS 1
 #define OUROS 2
@@ -312,6 +311,7 @@ void ApagaArea(int xInic, int yInic, int tamX, int tamY)
     }
 }
 
+
 void ImprimeChat(char chat[5][50])
 {
     ApagaArea(1, ALTURA + 2, 50, 1);
@@ -393,6 +393,46 @@ void DesenhaMao(tListaCartas *mao, int posX, int posY, char* param)
                 DesenhaCaixa(posX + 7, posY, 7, 5);
                 DesenhaCaixa(posX + 14, posY, 7, 5);
             }
+            break;
+    }
+}
+
+void DesenhaMesa(tListaCartas *monte)
+{
+    tCarta *carta1, *carta2, *carta3, *carta4;
+    int tam = TamLista(monte);
+
+    ApagaArea(29, 8, 28, 5);
+
+    switch(tam)
+    {
+        case 1:
+            carta1 = monte -> lista;
+            DesenhaCarta(carta1 -> naipe, carta1 -> valor, 33, 8);
+            break;
+        case 2:
+            carta1 = monte -> lista;
+            carta2 = carta1 -> proximo;
+            DesenhaCarta(carta1 -> naipe, carta1 -> valor, 31, 8);
+            DesenhaCarta(carta2 -> naipe, carta2 -> valor, 38, 8);
+            break;
+        case 3:
+            carta1 = monte -> lista;
+            carta2 = carta1 -> proximo;
+            carta3 = carta2 -> proximo;
+            DesenhaCarta(carta1 -> naipe, carta1 -> valor, 28, 8);
+            DesenhaCarta(carta2 -> naipe, carta2 -> valor, 35, 8);
+            DesenhaCarta(carta3 -> naipe, carta3 -> valor, 42, 8);
+            break;
+        case 4: 
+            carta1 = monte -> lista;
+            carta2 = carta1 -> proximo;
+            carta3 = carta2 -> proximo;
+            carta4 = carta3 -> proximo;
+            DesenhaCarta(carta1 -> naipe, carta1 -> valor, 29, 8);
+            DesenhaCarta(carta2 -> naipe, carta2 -> valor, 36, 8);
+            DesenhaCarta(carta3 -> naipe, carta3 -> valor, 43, 8);
+            DesenhaCarta(carta4 -> naipe, carta4 -> valor, 50, 8);
             break;
     }
 }

@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-I. -Wall  -lm
-DEPS = lib/graficos.h lib/carta.h lib/jogador.h lib/mesa.h
-OBJ = trab1.o lib/graficos.o lib/carta.o lib/jogador.o lib/mesa.o
+DEPS = lib/graficos.h lib/carta.h lib/bisca.h
+OBJ = trab1.o lib/graficos.o lib/carta.o lib/bisca.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -16,7 +16,7 @@ clib:
 	rm -f lib/*o
 	
 valgrind: trab1
-	valgrind -v ./trab1
+	valgrind ./trab1 1
 	
 add:
 	git add .
