@@ -3,6 +3,7 @@
 #include <string.h>
 #include "graficos.h"
 #include "carta.h"
+#include "jogador.h"
 
 #define PAUS 1
 #define OUROS 2
@@ -70,7 +71,7 @@ void CursorPosicao(int XPos, int YPos)
 }
 
 
-void DesenhaLayout(int x, int y, int posX, int posY)
+void DesenhaBordaDupla(int x, int y, int posX, int posY)
 {
     CursorPosicao(posX, posY);
     for(int i = 0; i <= y; i++)
@@ -166,30 +167,10 @@ void DesenhaCaixa(int x, int y, int tamX, int tamY)
     }
 }
 
-void ConverteNaipe(char string[], int valor)
-{   
-    switch(valor)
-    {
-        case OUROS:
-            strcpy(string, SIMBOLOOUROS);
-            break;
-        case PAUS:
-            strcpy(string, SIMBOLOPAUS);
-            break;
-        case COPAS:
-            strcpy(string, SIMBOLOCOPAS);
-            break;
-        case ESPADAS:
-            strcpy(string, SIMBOLOESPADAS);
-            break;
-    }
-}
-
 void DesenhaCarta(int naipeCarta, int valor, int xInicial, int yInicial)
 {
-    char naipe[4];
+    char *naipe = RetornaNaipe(naipeCarta);
     char valorCarta = ConverteValor(valor);
-    ConverteNaipe(naipe, naipeCarta);
 
     DesenhaCaixa(xInicial, yInicial, 7, 5);
 
@@ -290,8 +271,9 @@ void ApagaLinha(int linha, int tamanho)
 
 void DesenhaItensJogo(int jogadores)
 {
-    DesenhaLayout(LARGURA - 21, 6, 0, ALTURA + 1);
-    DesenhaLayout(20, 6, LARGURA - 20, ALTURA + 1);
+    DesenhaBordaDupla(LARGURA, ALTURA, 0, 0);
+    DesenhaBordaDupla(LARGURA - 21, 6, 0, ALTURA + 1);
+    DesenhaBordaDupla(20, 6, LARGURA - 20, ALTURA + 1);
     CursorPosicao(LARGURA - 15, ALTURA + 2);
     printf(">PONTUACAO<");
     DesenhaPontuacao(jogadores);
@@ -317,8 +299,6 @@ char* RetornaNaipe(int naipe)
 
     return "E";
 }
-
-
 
 void ApagaArea(int xInic, int yInic, int tamX, int tamY)
 {
@@ -361,3 +341,58 @@ void AtualizaChat(char chat[5][50], char string[50])
     strcpy(chat[4], string);
 }
 
+void DesenhaMao(tListaCartas *mao, int posX, int posY, char* param)
+{
+    tCarta *carta1, *carta2, *carta3;
+    int tam = TamLista(mao);
+    int parametro = strcmp(param, "1") == 0;
+
+    ApagaArea(posX, posY, 21, 5);
+
+    switch(tam)
+    {
+        case 1:
+            if(parametro)
+            {
+                carta1 = mao -> lista;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, posX + 7, posY);
+            }
+            else
+            {
+                DesenhaCaixa(posX + 7, posY, 7, 5);
+            }
+            break;
+        case 2:
+            if(parametro)
+            {
+                carta1 = mao -> lista;
+                carta2 = carta1 -> proximo;
+                carta3 = carta2 -> proximo;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, posX + 3, posY);
+                DesenhaCarta(carta2 -> naipe, carta2 -> valor, posX + 10, posY);
+            }
+            else
+            {
+                DesenhaCaixa(posX + 3, posY, 7, 5);
+                DesenhaCaixa(posX + 10, posY, 7, 5);
+            }
+            break;
+        case 3:
+            if(parametro)
+            {
+                carta1 = mao -> lista;
+                carta2 = carta1 -> proximo;
+                carta3 = carta2 -> proximo;
+                DesenhaCarta(carta1 -> naipe, carta1 -> valor, posX, posY);
+                DesenhaCarta(carta2 -> naipe, carta2 -> valor, posX + 7, posY);
+                DesenhaCarta(carta3 -> naipe, carta3 -> valor, posX + 14, posY);
+            }
+            else
+            {
+                DesenhaCaixa(posX, posY, 7, 5);
+                DesenhaCaixa(posX + 7, posY, 7, 5);
+                DesenhaCaixa(posX + 14, posY, 7, 5);
+            }
+            break;
+    }
+}

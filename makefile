@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-I. -Wall  -lm
-DEPS = lib/graficos.h lib/carta.h
-OBJ = trab1.o lib/graficos.o lib/carta.o
+DEPS = lib/graficos.h lib/carta.h lib/jogador.h lib/mesa.h
+OBJ = trab1.o lib/graficos.o lib/carta.o lib/jogador.o lib/mesa.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -26,8 +26,3 @@ commit: add
 
 push: commit
 	git push
-
-
-
-
-
