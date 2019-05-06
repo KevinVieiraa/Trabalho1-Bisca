@@ -6,22 +6,26 @@
 #include "graficos.h"
 
 
-tJogador* InicializaJogador(tListaCartas *baralho, int identificador)
+tJogador* CriaJogador(tListaCartas* lista, int identificador)
 {
     tJogador *novoJogador = (tJogador*)malloc(sizeof(tJogador));
     novoJogador -> mao = NovaListaCartas();
     novoJogador -> pontosCartas = NovaListaCartas();
     novoJogador -> pontos = 0;
     novoJogador -> id = identificador;
+    novoJogador -> prox = NULL;
 
-    Saca(baralho, novoJogador -> mao);
-    Saca(baralho, novoJogador -> mao);
-    Saca(baralho, novoJogador -> mao);
+    int i = 0;
+    while(i < 3)
+    {
+        Saca(lista, novoJogador -> mao);
+        i++;
+    }
 
     return novoJogador;
 }
 
-void LiberaJogador(tJogador *jogador)
+void LiberaJogador(tJogador* jogador)
 {
     LiberaLista(jogador -> mao);
     LiberaLista(jogador -> pontosCartas);
@@ -29,7 +33,7 @@ void LiberaJogador(tJogador *jogador)
 }
 
 
-tCarta* IACartaJogada(tJogador *jogador, int dificuldade)
+tCarta* IACartaJogada(tJogador* jogador, int dificuldade)
 {
     tCarta *retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamLista(jogador -> mao));
 
@@ -52,7 +56,7 @@ tMesa* InicializaMesa()
     return novaMesa;
 }
 
-void LiberaMesa(tMesa *mesa)
+void LiberaMesa(tMesa* mesa)
 {
     LiberaLista(mesa -> baralho);
     LiberaLista(mesa -> monte);

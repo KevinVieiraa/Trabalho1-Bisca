@@ -309,6 +309,7 @@ void ApagaArea(int xInic, int yInic, int tamX, int tamY)
             printf(" ");
         }
     }
+    CursorPosicao(xInic, yInic);
 }
 
 

@@ -21,15 +21,16 @@ tListaCartas* NovaListaCartas()
 	nova -> lista = NULL;
 	nova -> ultimo = NULL;
     nova -> tamanho = 0;
+
 	return nova;
 }
 
-void ModificaTamanho(tListaCartas *cartas, int valor)
+void ModificaTamanho(tListaCartas* cartas, int valor)
 {
     cartas -> tamanho += valor;
 }
 
-void InsereCarta(tListaCartas *cartas, tCarta *carta)
+void InsereCarta(tListaCartas* cartas, tCarta* carta)
 {
 	if(cartas -> lista == NULL)
 	{
@@ -45,7 +46,7 @@ void InsereCarta(tListaCartas *cartas, tCarta *carta)
 	}
 }
 
-void InicializaBaralho(tListaCartas *baralho)
+void InicializaBaralho(tListaCartas* baralho)
 {
     for(int i = 1;i <= 4;i++)
 	{
@@ -61,7 +62,7 @@ void ImprimeCarta(tCarta carta)
     printf("%s%c\n", RetornaNaipe(carta.naipe), ConverteValor(carta.valor));
 }
 
-void ImprimeLista(tListaCartas *lista)
+void ImprimeLista(tListaCartas* lista)
 {
 	if(lista != NULL && lista -> lista != NULL)
 	{
@@ -74,12 +75,12 @@ void ImprimeLista(tListaCartas *lista)
 	}
 }
 
-int TamLista(tListaCartas *cartas)
+int TamLista(tListaCartas* cartas)
 {
 	return cartas -> tamanho;
 }
 
-tCarta* RetiraCarta(tListaCartas *cartas, int pos)
+tCarta* RetiraCarta(tListaCartas* cartas, int pos)
 {
 	tCarta *carta;
 	
@@ -125,7 +126,7 @@ tCarta* RetiraCarta(tListaCartas *cartas, int pos)
 	return carta;
 }
 
-void Embaralha(tListaCartas *cartas)
+void Embaralha(tListaCartas* cartas)
 {
 	int tamanhoLista = TamLista(cartas);
 	for(int i = 1; i < tamanhoLista*25 ; i++)
@@ -134,7 +135,7 @@ void Embaralha(tListaCartas *cartas)
 	}
 }
 
-void LiberaLista(tListaCartas *cartas)
+void LiberaLista(tListaCartas* cartas)
 {
     tListaCartas *tmp = cartas;
     while(tmp -> lista != NULL)
@@ -146,7 +147,7 @@ void LiberaLista(tListaCartas *cartas)
     free(cartas);
 }
 
-void Saca(tListaCartas *origem, tListaCartas *destino)
+void Saca(tListaCartas* origem, tListaCartas* destino)
 {
     InsereCarta(destino, RetiraCarta(origem, 1));
 }

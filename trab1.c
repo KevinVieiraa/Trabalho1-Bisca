@@ -30,14 +30,70 @@
 #define COPAS 4
 
 
+tListaJogadores* NovaListaJogadores()
+{
+    tListaJogadores *nova = (tListaJogadores*)malloc(sizeof(tListaJogadores));
+
+    nova -> lista = NULL;
+    nova -> primeiro = NULL;
+    nova -> ultimo = NULL;
+    nova -> tamanho = 0;
+
+    return nova;
+}
+
+void ModificaTamanhoJogadores(tListaJogadores* lista, int valor)
+{
+    lista -> tamanho += valor;
+}
+
+void InsereJogador(tListaJogadores* jogadores, tJogador* jogador)
+{
+    if(jogadores != NULL && jogador != NULL)
+    {
+        if(jogadores -> lista == NULL)
+        {
+            jogadores -> lista = jogador;
+            jogadores -> primeiro = jogador;
+            jogadores -> ultimo = jogadores -> lista;
+            jogador -> prox = jogador;
+            ModificaTamanhoJogadores(jogadores, 1);
+        }
+        else
+        {
+            jogador -> prox = jogadores -> lista;
+            jogadores -> ultimo -> prox = jogador;
+            jogadores -> ultimo = jogador;
+            ModificaTamanhoJogadores(jogadores, 1);
+        }
+    }
+}
+
+
+void LiberaListaJogadores(tListaJogadores* jogadores)
+{
+    tListaJogadores *tmp = jogadores;
+    jogadores -> ultimo -> prox = NULL;
+    while(tmp -> lista != NULL)
+    {
+        tJogador *aux = tmp -> lista -> prox;
+        LiberaJogador(tmp->lista);
+        tmp -> lista = aux;
+    }
+    free(jogadores);
+}
+
+
 int main(int argc, char *argv[])
 {
-    tJogador *jogador1, *jogador2, *jogador3, *jogador4;
+    tJogador *jogador1;//, *jogador2, *jogador3, *jogador4;
+    tListaJogadores *ljogadores;
     tMesa *mesa;
     int estado = 0;
     int jogadores;
     char opcao;
-    char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
+    
+    
 
 	srand(time(NULL));
 	
@@ -148,18 +204,31 @@ int main(int argc, char *argv[])
         //[Inicio do jogo]
         if(estado == EJOGO)
         {
+            mesa = InicializaMesa();
+            Embaralha(mesa -> baralho);
+
+            jogador1 = CriaJogador(mesa -> baralho, 1);
+            //jogador2 = CriaJogador(mesa -> baralho, 2);
+
+            ljogadores = NovaListaJogadores();
+            InsereJogador(ljogadores, jogador1);
+            LiberaListaJogadores(ljogadores);
+            LiberaMesa(mesa);
+            estado = EMENU;
+            /*
+            char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
             DesenhaItensJogo(jogadores);
             CursorPosicao(0, 28);
             
             mesa = InicializaMesa();
             Embaralha(mesa -> baralho);
 
-            jogador1 = InicializaJogador(mesa -> baralho, 1);
-            jogador2 = InicializaJogador(mesa -> baralho, 2);
+            jogador1 = CriaJogador(mesa -> baralho, 1);
+            jogador2 = CriaJogador(mesa -> baralho, 2);
             if(jogadores == 4)
             {
-                jogador3 = InicializaJogador(mesa -> baralho, 3);
-                jogador4 = InicializaJogador(mesa -> baralho, 4);
+                jogador3 = CriaJogador(mesa -> baralho, 3);
+                jogador4 = CriaJogador(mesa -> baralho, 4);
             }
               
             while(estado == EJOGO)
@@ -169,7 +238,7 @@ int main(int argc, char *argv[])
                 while(!jogouCarta && estado == EJOGO)
                 {
                     char tmp[50]; //Guarda o valor temporario da mensagem a ser exibida no chat
-                    tCarta *retirada; //Ponteiro temporario para salvar a carta retirada pelo jogador ou IA
+                    tCarta *retirada; //Ponteiro temporario para salvar a carta retirada pelo jogador
                     switch(getchar())
                     {
                         case '1':
@@ -288,7 +357,8 @@ int main(int argc, char *argv[])
                 LiberaJogador(jogador4);
             }
             LiberaMesa(mesa);
-            sleep(1);
+            sleep(1);*/
+            ApagaArea(0, 22, 73, 7);
         }
     }
 

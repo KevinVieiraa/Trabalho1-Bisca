@@ -21,23 +21,23 @@ tCarta* NovaCarta(int valor, int naipe);
 
 tListaCartas* NovaListaCartas();
 
-void ModificaTamanho(tListaCartas *cartas, int valor);
+void ModificaTamanho(tListaCartas* cartas, int valor);
 
-void InsereCarta(tListaCartas *cartas, tCarta *carta);
+void InsereCarta(tListaCartas* cartas, tCarta* carta);
 
-void InicializaBaralho(tListaCartas *baralho);
+void InicializaBaralho(tListaCartas* baralho);
 
 void ImprimeCarta(tCarta carta);
 
-void ImprimeLista(tListaCartas *lista);
+void ImprimeLista(tListaCartas* lista);
 
-int TamLista(tListaCartas *cartas);
+int TamLista(tListaCartas* cartas);
 
-tCarta* RetiraCarta(tListaCartas *cartas, int pos);
+tCarta* RetiraCarta(tListaCartas* cartas, int pos);
 
-void Embaralha(tListaCartas *cartas);
+void Embaralha(tListaCartas* cartas);
 
-void LiberaLista(tListaCartas *cartas);
+void LiberaLista(tListaCartas* cartas);
 
-void Saca(tListaCartas *baralho, tListaCartas *maoDestino);
+void Saca(tListaCartas* baralho, tListaCartas* maoDestino);
 #endif

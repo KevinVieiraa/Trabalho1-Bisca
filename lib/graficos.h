@@ -108,7 +108,7 @@ void ImprimeChat(char chat[5][50]);
 
 void AtualizaChat(char chat[5][50], char string[50]);
 
-void DesenhaMao(tListaCartas *mao, int posX, int posY, char* param);
+void DesenhaMao(tListaCartas* mao, int posX, int posY, char* param);
 
-void DesenhaMesa(tListaCartas *monte);
+void DesenhaMesa(tListaCartas* monte);
 #endif
