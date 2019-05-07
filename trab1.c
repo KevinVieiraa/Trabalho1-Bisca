@@ -93,7 +93,21 @@ void AdicionaJogadores(tListaJogadores* jogadores, tListaCartas* listaOrigem, in
 
 void DecidePontuacao()
 {
-    
+
+}
+
+void DesenhaBaralho(tListaCartas* baralho, char* param)
+{
+    tCarta *tmp = baralho -> lista;
+    int parametro = strcmp(param, "1") == 0;
+    if(parametro)
+    {
+        DesenhaCarta(tmp -> naipe, tmp -> valor, 1, 7);
+    }
+    else
+    {
+        DesenhaCaixa(1, 7, 7, 5);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -226,6 +240,7 @@ int main(int argc, char *argv[])
             AdicionaJogadores(lJogadores, mesa -> baralho, nJogadores);
 
             DesenhaItensJogo(nJogadores);
+            DesenhaBaralho(mesa -> baralho, argv[1]);
             CursorPosicao(0, 28);
             
             jogadorAtual = lJogadores -> primeiro;
@@ -366,7 +381,7 @@ int main(int argc, char *argv[])
                     jogadorAtual = jogadorAtual -> prox;
                 }
 
-                if(TamLista(mesa -> monte -> tamanho) == nJogadores)
+                if(TamLista(mesa -> monte) == nJogadores)
                 {
                     DecidePontuacao();
                 }
