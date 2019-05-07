@@ -91,6 +91,11 @@ void AdicionaJogadores(tListaJogadores* jogadores, tListaCartas* listaOrigem, in
     }
 }
 
+void DecidePontuacao()
+{
+    
+}
+
 int main(int argc, char *argv[])
 {
     tListaJogadores *lJogadores;
@@ -214,7 +219,7 @@ int main(int argc, char *argv[])
             tCarta *retirada; //Ponteiro temporario para salvar a carta retirada pelo jogador
             char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
             char tmp[50]; //Guarda o valor temporario da mensagem a ser exibida no chat
-
+            char comando;
             mesa = InicializaMesa();
             Embaralha(mesa -> baralho);
             lJogadores = NovaListaJogadores();
@@ -244,13 +249,16 @@ int main(int argc, char *argv[])
                 jogadorAtual = jogadorAtual -> prox;
             }
 
+            jogadorAtual = lJogadores -> primeiro;
+
             while(estado == EJOGO)
             {
                 if(jogadorAtual -> id == 1)//Vez do jogador
                 {
                     ApagaLinha(28, 100);
                     printf(">");
-                    switch(getchar())
+                    comando = getchar();
+                    switch(comando)
                     {
                         case '1':
                             if(TamLista(jogadorAtual -> mao) >= 1)
@@ -302,9 +310,14 @@ int main(int argc, char *argv[])
                             break;
                         case 'E':
                         case 'e':
+                            Embaralha(mesa -> baralho);
                             break;
                         case 'C':
                         case 'c':
+
+                            break;
+                        case 'B':
+                        case 'b':
                             break;
                         case 'M':
                         case 'm':
@@ -330,6 +343,7 @@ int main(int argc, char *argv[])
                 }
 
                 ImprimeChat(chat);
+                DesenhaMesa(mesa -> monte);
 
                 switch(jogadorAtual -> id)
                 {
@@ -347,157 +361,20 @@ int main(int argc, char *argv[])
                         break;
                 }
                 
-                jogadorAtual = jogadorAtual -> prox;
+                if(comando == '1' || comando == '2' || comando == '3')
+                {
+                    jogadorAtual = jogadorAtual -> prox;
+                }
+
+                if(TamLista(mesa -> monte -> tamanho) == nJogadores)
+                {
+                    DecidePontuacao();
+                }
             }
 
             LiberaListaJogadores(lJogadores);
             LiberaMesa(mesa);
             estado = EMENU;
-
-
-            /*
-            char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
-            DesenhaItensJogo(jogadores);
-            CursorPosicao(0, 28);
-            
-            mesa = InicializaMesa();
-            Embaralha(mesa -> baralho);
-
-            jogador1 = CriaJogador(mesa -> baralho, 1);
-            jogador2 = CriaJogador(mesa -> baralho, 2);
-            if(jogadores == 4)
-            {
-                jogador3 = CriaJogador(mesa -> baralho, 3);
-                jogador4 = CriaJogador(mesa -> baralho, 4);
-            }
-              
-            while(estado == EJOGO)
-            {   
-                printf(">");
-                int jogouCarta = 0; //Sinaliza quando o jogo deve prosseguir a logica, necessario para opcoes diferentes de 1, 2 ou 3
-                while(!jogouCarta && estado == EJOGO)
-                {
-                    char tmp[50]; //Guarda o valor temporario da mensagem a ser exibida no chat
-                    tCarta *retirada; //Ponteiro temporario para salvar a carta retirada pelo jogador
-                    switch(getchar())
-                    {
-                        case '1':
-                            if(TamLista(jogador1 -> mao) >= 1)
-                            {
-                                retirada = RetiraCarta(jogador1 -> mao, 1);
-                                InsereCarta(mesa -> monte, retirada);
-                                jogouCarta = 1;
-
-                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
-                                AtualizaChat(chat, tmp);
-                            }
-                            else
-                            {
-                                //Nao existe carta na posicao 1
-                                sprintf(tmp, "Carta na posicao invalida");
-                                AtualizaChat(chat, tmp);
-                            }
-                            break;
-                        case '2':
-                            if(TamLista(jogador1 -> mao) >= 2)
-                            {
-                                retirada = RetiraCarta(jogador1 -> mao, 2);
-                                InsereCarta(mesa -> monte, retirada);
-                                jogouCarta = 1;
-
-                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
-                                AtualizaChat(chat, tmp);
-                            }
-                            else
-                            {
-                                //Nao existe carta na posicao 2
-                                sprintf(tmp, "Carta na posicao invalida");
-                                AtualizaChat(chat, tmp);
-                            }
-                            break;
-                        case '3':
-                            if(TamLista(jogador1 -> mao) >= 3)
-                            {
-                                retirada = RetiraCarta(jogador1 -> mao, 3);
-                                InsereCarta(mesa -> monte, retirada);
-                                jogouCarta = 1;
-
-                                AtualizaChat(chat, tmp);
-                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
-                            }
-                            else
-                            {
-                                //Nao existe carta na posicao 3
-                                sprintf(tmp, "Carta na posicao invalida");
-                                AtualizaChat(chat, tmp);
-                            }
-                            break;
-                        case 'E':
-                        case 'e':
-                            break;
-                        case 'C':
-                        case 'c':
-                            break;
-                        case 'M':
-                        case 'm':
-                            sprintf(tmp, "Encerrando partida... Abrindo menu...");
-                            AtualizaChat(chat, tmp);
-                            estado = EMENU;
-                            break;
-                        case 'S':
-                        case 's':
-                            sprintf(tmp, "Encerrando programa...");
-                            AtualizaChat(chat, tmp);
-                            estado = ESAIR;
-                            break;
-                    }
-                    
-                    if(jogouCarta)
-                    {
-                        retirada = IACartaJogada(jogador2, 1);
-                        InsereCarta(mesa -> monte, retirada);
-                        sprintf(tmp, "Jogador %d jogou a carta %c%s", jogador2 -> id, ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
-                        AtualizaChat(chat, tmp);
-
-                        if(jogadores == 4)
-                        {
-                            retirada = IACartaJogada(jogador3, 1);
-                            InsereCarta(mesa -> monte, retirada);
-                            sprintf(tmp, "Jogador %d jogou a carta %c%s", jogador3 -> id, ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
-                            AtualizaChat(chat, tmp);
-                            
-                            retirada = IACartaJogada(jogador4, 1);
-                            InsereCarta(mesa -> monte, retirada);
-                            sprintf(tmp, "Jogador %d jogou a carta %c%s", jogador3 -> id, ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
-                            AtualizaChat(chat, tmp);
-                        }
-                    }
-
-                    ImprimeChat(chat);
-
-                    DesenhaMao(jogador1 -> mao, 19, 15, "1");
-                    DesenhaMao(jogador2 -> mao, 19, 1, argv[1]);
-                    if(jogadores == 4)
-                    {
-                        DesenhaMao(jogador3 -> mao, 49, 15, argv[1]);
-                        DesenhaMao(jogador4 -> mao, 49, 1, argv[1]);
-                    }
-
-                    DesenhaMesa(mesa -> monte);
-                    ApagaLinha(28, 100);
-                }
-                
-            }
-
-            LiberaJogador(jogador1);
-            LiberaJogador(jogador2);
-            if(jogadores == 4)
-            {
-                LiberaJogador(jogador3);
-                LiberaJogador(jogador4);
-            }
-            LiberaMesa(mesa);
-            sleep(1);*/
             ApagaArea(0, 22, 73, 7);
         }
     }

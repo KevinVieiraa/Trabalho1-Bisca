@@ -403,7 +403,7 @@ void DesenhaMesa(tListaCartas *monte)
     tCarta *carta1, *carta2, *carta3, *carta4;
     int tam = TamLista(monte);
 
-    ApagaArea(29, 8, 28, 5);
+    ApagaArea(28, 8, 28, 5);
 
     switch(tam)
     {
