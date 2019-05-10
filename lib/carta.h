@@ -31,7 +31,7 @@ void ImprimeCarta(tCarta* carta);
 
 void ImprimeLista(tListaCartas* lista);
 
-int TamLista(tListaCartas* cartas);
+int TamListaCartas(tListaCartas* cartas);
 
 tCarta* RetiraCarta(tListaCartas* cartas, int pos);
 

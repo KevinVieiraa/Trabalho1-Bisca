@@ -345,7 +345,7 @@ void AtualizaChat(char chat[5][50], char string[50])
 void DesenhaMao(tListaCartas *mao, int posX, int posY, char* param)
 {
     tCarta *carta1, *carta2, *carta3;
-    int tam = TamLista(mao);
+    int tam = TamListaCartas(mao);
     int parametro = strcmp(param, "1") == 0;
 
     ApagaArea(posX, posY, 21, 5);
@@ -401,7 +401,7 @@ void DesenhaMao(tListaCartas *mao, int posX, int posY, char* param)
 void DesenhaMesa(tListaCartas *monte)
 {
     tCarta *carta1, *carta2, *carta3, *carta4;
-    int tam = TamLista(monte);
+    int tam = TamListaCartas(monte);
 
     ApagaArea(28, 8, 29, 5);
 

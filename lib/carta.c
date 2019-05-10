@@ -75,7 +75,7 @@ void ImprimeLista(tListaCartas* lista)
 	}
 }
 
-int TamLista(tListaCartas* cartas)
+int TamListaCartas(tListaCartas* cartas)
 {
 	return cartas -> tamanho;
 }
@@ -84,7 +84,7 @@ tCarta* RetiraCarta(tListaCartas* cartas, int pos)
 {
 	tCarta *carta;
 	
-    int tamanho = TamLista(cartas);
+    int tamanho = TamListaCartas(cartas);
     if(tamanho != 0 && pos > 0 && pos <= tamanho)
     {
         if(pos == 1)
@@ -128,7 +128,7 @@ tCarta* RetiraCarta(tListaCartas* cartas, int pos)
 
 void Embaralha(tListaCartas* cartas)
 {
-	int tamanhoLista = TamLista(cartas);
+	int tamanhoLista = TamListaCartas(cartas);
 	for(int i = 1; i < tamanhoLista*25 ; i++)
 	{   
         InsereCarta(cartas, RetiraCarta(cartas, 1 + rand() % tamanhoLista));

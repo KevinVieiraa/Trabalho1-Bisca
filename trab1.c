@@ -123,9 +123,48 @@ tJogador* DecidePrimeiroJogador(tListaJogadores* jogadores)
 
 void CortaBaralho(tMesa* mesa)
 {
-    InsereCarta(mesa -> baralho, RetiraCarta(mesa -> baralho, 1 + rand() % TamLista(mesa -> baralho)));
+    InsereCarta(mesa -> baralho, RetiraCarta(mesa -> baralho, 1 + rand() % TamListaCartas(mesa -> baralho)));
     mesa -> trunfo = mesa -> baralho -> ultimo;
 }
+
+int IdJogador(tJogador* jogador)
+{
+    return jogador -> id;
+}
+
+int PontosJogador(tJogador* jogador)
+{
+    return jogador -> pontos;
+}
+
+int ValorCarta(tCarta* carta)
+{
+    return carta -> valor;
+}
+
+int NaipeCarta(tCarta* carta)
+{
+    return carta -> naipe;
+}
+
+int BuscaPorNaipe(tListaCartas* cartas, int naipe)
+{
+    tCarta* aux = cartas -> lista;
+    while(aux != NULL)
+    {
+        if(NaipeCarta(aux) == naipe)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void BuscaPorValor()
+{
+
+}
+
 
 void DecideRodada(tMesa* mesa, tListaJogadores* jogadores)
 {
@@ -141,14 +180,14 @@ void DesenhaBaralho(tListaCartas* baralho, char* param)
         CursorPosicao(1, 5);
         printf("Restantes:");
         CursorPosicao(1, 6);
-        printf("%d Cartas", TamLista(baralho));
+        printf("%d Cartas", TamListaCartas(baralho));
         DesenhaCarta(tmp -> naipe, tmp -> valor, 1, 7);
     }
     else
     {
         DesenhaCaixa(1, 7, 7, 5);
         CursorPosicao(3, 9);
-        printf("%d", TamLista(baralho));
+        printf("%d", TamListaCartas(baralho));
     }
 }
 
@@ -170,7 +209,7 @@ void MostraBaralho(tListaCartas* baralho)
     for(int i = 1; i <= 4; i++)
     {
         CursorPosicao(5, 22 + i);
-        for(int j = 1; j <= TamLista(baralho)/4; j++)
+        for(int j = 1; j <= TamListaCartas(baralho)/4; j++)
         {
             ImprimeCarta(aux);
             printf(" ");
@@ -307,6 +346,7 @@ int main(int argc, char *argv[])
             char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
             char tmp[50]; //Guarda o valor temporario da mensagem a ser exibida no chat
             char comando;
+            
             mesa = InicializaMesa();
             Embaralha(mesa -> baralho);
             sprintf(tmp, "Embaralhando...");
@@ -322,7 +362,7 @@ int main(int argc, char *argv[])
             jogadorAtual = DecidePrimeiroJogador(lJogadores);
             CortaBaralho(mesa);
 
-            sprintf(tmp, "o Jogador %d cortou o baralho", IdentificadorJogador(jogadorAtual));
+            sprintf(tmp, "O Jogador %d cortou o baralho", IdentificadorJogador(jogadorAtual));
             AtualizaChat(chat, tmp);
             sprintf(tmp, "O trunfo da partida eh \"%s\"", RetornaNaipe(mesa -> trunfo -> naipe));
             AtualizaChat(chat, tmp);
@@ -335,7 +375,7 @@ int main(int argc, char *argv[])
             
             for(int i = 1; i < nJogadores + 1; i++)
             {
-                switch(jogadorAtual -> id)
+                switch(IdJogador(jogadorAtual))
                 {
                     case 1:
                         DesenhaMao(jogadorAtual -> mao, 19, 15, "1");
@@ -350,12 +390,13 @@ int main(int argc, char *argv[])
                         DesenhaMao(jogadorAtual -> mao, 49, 15, argv[1]);
                         break;
                 }
-                jogadorAtual = jogadorAtual -> prox;
+                AvancaListaJogadores(lJogadores, 1);
+                    jogadorAtual = lJogadores -> lista;
             }
 
             while(estado == EJOGO)
             {
-                if(jogadorAtual -> id == 1)//Vez do jogador
+                if(IdJogador(jogadorAtual) == 1)//Vez do jogador
                 {
                     ApagaLinha(28, 100);
                     printf(">");
@@ -363,12 +404,12 @@ int main(int argc, char *argv[])
                     switch(comando)
                     {
                         case '1':
-                            if(TamLista(jogadorAtual -> mao) >= 1)
+                            if(TamListaCartas(jogadorAtual -> mao) >= 1)
                             {
                                 retirada = RetiraCarta(jogadorAtual -> mao, 1);
                                 InsereCarta(mesa -> monte, retirada);
 
-                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
+                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(ValorCarta(retirada)), RetornaNaipe(NaipeCarta(retirada)));
                                 AtualizaChat(chat, tmp);
                             }
                             else
@@ -381,12 +422,12 @@ int main(int argc, char *argv[])
                             break;
                         case '2':
 
-                            if(TamLista(jogadorAtual -> mao) >= 2)
+                            if(TamListaCartas(jogadorAtual -> mao) >= 2)
                             {
                                 retirada = RetiraCarta(jogadorAtual -> mao, 2);
                                 InsereCarta(mesa -> monte, retirada);
 
-                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
+                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(ValorCarta(retirada)), RetornaNaipe(NaipeCarta(retirada)));
                                 AtualizaChat(chat, tmp);
                             }
                             else
@@ -399,12 +440,12 @@ int main(int argc, char *argv[])
                             break;
 
                         case '3':
-                            if(TamLista(jogadorAtual -> mao) >= 3)
+                            if(TamListaCartas(jogadorAtual -> mao) >= 3)
                             {
                                 retirada = RetiraCarta(jogadorAtual -> mao, 3);
                                 InsereCarta(mesa -> monte, retirada);
 
-                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
+                                sprintf(tmp, "Voce jogou a carta %c%s", ConverteValor(ValorCarta(retirada)), RetornaNaipe(NaipeCarta(retirada)));
                                 AtualizaChat(chat, tmp);
                             }
                             else
@@ -459,7 +500,7 @@ int main(int argc, char *argv[])
                     //IA Joga
                     retirada = IACartaJogada(jogadorAtual, 1);
                     InsereCarta(mesa -> monte, retirada);
-                    sprintf(tmp, "Jogador %d jogou a carta %c%s", jogadorAtual -> id, ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
+                    sprintf(tmp, "Jogador %d jogou a carta %c%s", IdJogador(jogadorAtual), ConverteValor(ValorCarta(retirada)), RetornaNaipe(NaipeCarta(retirada)));
                     AtualizaChat(chat, tmp);
                     comando = '1';
                 }
@@ -467,7 +508,7 @@ int main(int argc, char *argv[])
                 ImprimeChat(chat);
                 DesenhaMesa(mesa -> monte);
 
-                switch(jogadorAtual -> id)
+                switch(IdJogador(jogadorAtual))
                 {
                     case 1:
                         DesenhaMao(jogadorAtual -> mao, 19, 15, "1");
@@ -489,7 +530,7 @@ int main(int argc, char *argv[])
                     jogadorAtual = lJogadores -> lista;
                 }
 
-                if(TamLista(mesa -> monte) == nJogadores)
+                if(TamListaCartas(mesa -> monte) == nJogadores)
                 {
                     DecideRodada(mesa, lJogadores);
                 }
