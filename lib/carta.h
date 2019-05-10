@@ -27,7 +27,7 @@ void InsereCarta(tListaCartas* cartas, tCarta* carta);
 
 void InicializaBaralho(tListaCartas* baralho);
 
-void ImprimeCarta(tCarta carta);
+void ImprimeCarta(tCarta* carta);
 
 void ImprimeLista(tListaCartas* lista);
 

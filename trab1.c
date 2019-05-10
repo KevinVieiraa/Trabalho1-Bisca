@@ -71,6 +71,7 @@ void InsereJogador(tListaJogadores* jogadores, tJogador* jogador)
 
 void LiberaListaJogadores(tListaJogadores* jogadores)
 {
+    jogadores -> lista = jogadores -> primeiro;
     tListaJogadores *tmp = jogadores;
     jogadores -> ultimo -> prox = NULL;
     while(tmp -> lista != NULL)
@@ -91,7 +92,42 @@ void AdicionaJogadores(tListaJogadores* jogadores, tListaCartas* listaOrigem, in
     }
 }
 
-void DecidePontuacao()
+int TamJogadores(tListaJogadores* jogadores)
+{
+    return jogadores -> tamanho;
+}
+
+void ResetaListaJogadores(tListaJogadores* jogadores)
+{
+    jogadores -> lista = jogadores -> primeiro;
+}
+
+void AvancaListaJogadores(tListaJogadores* jogadores, int qtd)
+{
+    for(int i = 1; i <= qtd; i++)
+    {
+        jogadores -> lista = jogadores -> lista -> prox;
+    }
+}
+
+
+tJogador* DecidePrimeiroJogador(tListaJogadores* jogadores)
+{
+    int idSelecionado = 1 + rand() % TamJogadores(jogadores);
+    while(jogadores -> lista -> id != idSelecionado)
+    {
+        AvancaListaJogadores(jogadores, 1);
+    }
+    return jogadores -> lista;
+}
+
+void CortaBaralho(tMesa* mesa)
+{
+    InsereCarta(mesa -> baralho, RetiraCarta(mesa -> baralho, 1 + rand() % TamLista(mesa -> baralho)));
+    mesa -> trunfo = mesa -> baralho -> ultimo;
+}
+
+void DecideRodada(tMesa* mesa, tListaJogadores* jogadores)
 {
 
 }
@@ -102,12 +138,50 @@ void DesenhaBaralho(tListaCartas* baralho, char* param)
     int parametro = strcmp(param, "1") == 0;
     if(parametro)
     {
+        CursorPosicao(1, 5);
+        printf("Restantes:");
+        CursorPosicao(1, 6);
+        printf("%d Cartas", TamLista(baralho));
         DesenhaCarta(tmp -> naipe, tmp -> valor, 1, 7);
     }
     else
     {
         DesenhaCaixa(1, 7, 7, 5);
+        CursorPosicao(3, 9);
+        printf("%d", TamLista(baralho));
     }
+}
+
+
+void DesenhaTrunfo(tCarta* trunfo)
+{
+    CursorPosicao(1, 12);
+    printf("Trunfo:");
+    DesenhaCarta(trunfo -> naipe, trunfo -> valor, 1, 13);
+}
+
+void MostraBaralho(tListaCartas* baralho)
+{
+    tCarta *aux = baralho -> lista;
+
+    ApagaArea(1, 22, 50, 5);
+    CursorPosicao(5, 22);
+    printf("Cartas no baralho:");
+    for(int i = 1; i <= 4; i++)
+    {
+        CursorPosicao(5, 22 + i);
+        for(int j = 1; j <= TamLista(baralho)/4; j++)
+        {
+            ImprimeCarta(aux);
+            printf(" ");
+            aux = aux -> proximo;
+        }
+    }
+}
+
+int IdentificadorJogador(tJogador* jogador)
+{
+    return jogador -> id;
 }
 
 int main(int argc, char *argv[])
@@ -117,8 +191,6 @@ int main(int argc, char *argv[])
     int estado = 0;
     int nJogadores;
     char opcao;
-    
-    
 
 	srand(time(NULL));
 	
@@ -229,6 +301,7 @@ int main(int argc, char *argv[])
         //[Inicio do jogo]
         if(estado == EJOGO)
         {
+            
             tJogador *jogadorAtual;//Aponta para o jogador da vez
             tCarta *retirada; //Ponteiro temporario para salvar a carta retirada pelo jogador
             char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
@@ -236,14 +309,30 @@ int main(int argc, char *argv[])
             char comando;
             mesa = InicializaMesa();
             Embaralha(mesa -> baralho);
+            sprintf(tmp, "Embaralhando...");
+            AtualizaChat(chat, tmp);
+            ImprimeChat(chat);
+
             lJogadores = NovaListaJogadores();
             AdicionaJogadores(lJogadores, mesa -> baralho, nJogadores);
+            sprintf(tmp, "Distribuindo cartas...");
+            AtualizaChat(chat, tmp);
+            ImprimeChat(chat);
+
+            jogadorAtual = DecidePrimeiroJogador(lJogadores);
+            CortaBaralho(mesa);
+
+            sprintf(tmp, "o Jogador %d cortou o baralho", IdentificadorJogador(jogadorAtual));
+            AtualizaChat(chat, tmp);
+            sprintf(tmp, "O trunfo da partida eh \"%s\"", RetornaNaipe(mesa -> trunfo -> naipe));
+            AtualizaChat(chat, tmp);
+            ImprimeChat(chat);
 
             DesenhaItensJogo(nJogadores);
             DesenhaBaralho(mesa -> baralho, argv[1]);
+            DesenhaTrunfo(mesa -> trunfo);
             CursorPosicao(0, 28);
             
-            jogadorAtual = lJogadores -> primeiro;
             for(int i = 1; i < nJogadores + 1; i++)
             {
                 switch(jogadorAtual -> id)
@@ -263,8 +352,6 @@ int main(int argc, char *argv[])
                 }
                 jogadorAtual = jogadorAtual -> prox;
             }
-
-            jogadorAtual = lJogadores -> primeiro;
 
             while(estado == EJOGO)
             {
@@ -289,9 +376,11 @@ int main(int argc, char *argv[])
                                 //Nao existe carta na posicao 1
                                 sprintf(tmp, "Carta na posicao invalida");
                                 AtualizaChat(chat, tmp);
+                                comando = '-';
                             }
                             break;
                         case '2':
+
                             if(TamLista(jogadorAtual -> mao) >= 2)
                             {
                                 retirada = RetiraCarta(jogadorAtual -> mao, 2);
@@ -305,8 +394,10 @@ int main(int argc, char *argv[])
                                 //Nao existe carta na posicao 2
                                 sprintf(tmp, "Carta na posicao invalida");
                                 AtualizaChat(chat, tmp);
+                                comando = '-';
                             }
                             break;
+
                         case '3':
                             if(TamLista(jogadorAtual -> mao) >= 3)
                             {
@@ -321,25 +412,40 @@ int main(int argc, char *argv[])
                                 //Nao existe carta na posicao 3
                                 sprintf(tmp, "Carta na posicao invalida");
                                 AtualizaChat(chat, tmp);
+                                comando = '-';
                             }
                             break;
+                        //Embaralha as cartas novamente
                         case 'E':
                         case 'e':
-                            Embaralha(mesa -> baralho);
+                            if(strcmp(argv[1], "1") == 0)
+                            {
+                                Embaralha(mesa -> baralho);
+                                DesenhaBaralho(mesa -> baralho, argv[1]);
+                            }
                             break;
+
                         case 'C':
                         case 'c':
-
                             break;
+                        //Mostra o baralho na ordem
                         case 'B':
                         case 'b':
+                            if(strcmp(argv[1], "1") == 0)
+                            {
+                                MostraBaralho(mesa -> baralho);
+                                getchar();
+                                getchar();
+                            }
                             break;
+                        //Encerra a partida e volta ao menu
                         case 'M':
                         case 'm':
                             sprintf(tmp, "Encerrando partida... Abrindo menu...");
                             AtualizaChat(chat, tmp);
                             estado = EMENU;
                             break;
+                        //Sai do programa
                         case 'S':
                         case 's':
                             sprintf(tmp, "Encerrando programa...");
@@ -355,6 +461,7 @@ int main(int argc, char *argv[])
                     InsereCarta(mesa -> monte, retirada);
                     sprintf(tmp, "Jogador %d jogou a carta %c%s", jogadorAtual -> id, ConverteValor(retirada -> valor), RetornaNaipe(retirada -> naipe));
                     AtualizaChat(chat, tmp);
+                    comando = '1';
                 }
 
                 ImprimeChat(chat);
@@ -378,12 +485,13 @@ int main(int argc, char *argv[])
                 
                 if(comando == '1' || comando == '2' || comando == '3')
                 {
-                    jogadorAtual = jogadorAtual -> prox;
+                    AvancaListaJogadores(lJogadores, 1);
+                    jogadorAtual = lJogadores -> lista;
                 }
 
                 if(TamLista(mesa -> monte) == nJogadores)
                 {
-                    DecidePontuacao();
+                    DecideRodada(mesa, lJogadores);
                 }
             }
 
@@ -393,6 +501,5 @@ int main(int argc, char *argv[])
             ApagaArea(0, 22, 73, 7);
         }
     }
-
     return 0;
 }

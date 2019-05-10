@@ -28,7 +28,7 @@ typedef struct mesa
 {
     tListaCartas* baralho;
     tListaCartas* monte;
-    tCarta *corte;
+    tCarta *trunfo;
 }tMesa;
 
 

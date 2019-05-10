@@ -49,7 +49,7 @@ tMesa* InicializaMesa()
     tMesa *novaMesa = (tMesa*)malloc(sizeof(tMesa));
     novaMesa -> baralho = NovaListaCartas();
     novaMesa -> monte = NovaListaCartas();
-    novaMesa -> corte = NovaCarta(4, 4);
+    novaMesa -> trunfo = NULL;
 
     InicializaBaralho(novaMesa -> baralho);
 
@@ -60,7 +60,6 @@ void LiberaMesa(tMesa* mesa)
 {
     LiberaLista(mesa -> baralho);
     LiberaLista(mesa -> monte);
-    free(mesa -> corte);
     free(mesa);
 }
 

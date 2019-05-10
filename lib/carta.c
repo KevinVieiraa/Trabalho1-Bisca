@@ -57,9 +57,9 @@ void InicializaBaralho(tListaCartas* baralho)
 	}
 }
 
-void ImprimeCarta(tCarta carta)
+void ImprimeCarta(tCarta* carta)
 {
-    printf("%s%c\n", RetornaNaipe(carta.naipe), ConverteValor(carta.valor));
+    printf("%s%c", RetornaNaipe(carta -> naipe), ConverteValor(carta -> valor));
 }
 
 void ImprimeLista(tListaCartas* lista)
@@ -69,7 +69,7 @@ void ImprimeLista(tListaCartas* lista)
 		tCarta *aux = lista -> lista;
 		while(aux != NULL)
 		{
-			ImprimeCarta(*aux);
+			ImprimeCarta(aux);
 			aux = aux -> proximo;
 		}
 	}
