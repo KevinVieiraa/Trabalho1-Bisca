@@ -165,10 +165,29 @@ void BuscaPorValor()
 
 }
 
+void PrintaTeste(char* string, int x, int y)
+{
+    CursorPosicao(x, y);
+    printf("%s", string);
+}
 
 void DecideRodada(tMesa* mesa, tListaJogadores* jogadores)
-{
-
+{   
+    if(BuscaPorNaipe(mesa -> monte, NaipeCarta(mesa -> trunfo)))
+    {
+        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+    }
+    else
+    {
+        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+    }
+    
 }
 
 void DesenhaBaralho(tListaCartas* baralho, char* param)
