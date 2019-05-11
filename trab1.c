@@ -113,7 +113,7 @@ void AvancaListaJogadores(tListaJogadores* jogadores, int qtd)
 
 tJogador* DecidePrimeiroJogador(tListaJogadores* jogadores)
 {
-    int idSelecionado = 1 + rand() % TamJogadores(jogadores);
+    int idSelecionado = 1 /*+ rand() % TamJogadores(jogadores)*/;
     while(jogadores -> lista -> id != idSelecionado)
     {
         AvancaListaJogadores(jogadores, 1);
@@ -156,6 +156,7 @@ int BuscaPorNaipe(tListaCartas* cartas, int naipe)
         {
             return 1;
         }
+        aux = aux -> proximo;
     }
     return 0;
 }
@@ -173,21 +174,31 @@ void PrintaTeste(char* string, int x, int y)
 
 void DecideRodada(tMesa* mesa, tListaJogadores* jogadores)
 {   
+    tCarta* cartaGanhadora;
+    tListaCartas* aux = mesa -> monte;
+
     if(BuscaPorNaipe(mesa -> monte, NaipeCarta(mesa -> trunfo)))
     {
-        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
-        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
-        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
-        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+        while(aux -> lista != NULL)
+        {
+            if(NaipeCarta(aux -> lista) == NaipeCarta(mesa -> trunfo))
+            {
+                if(NULL == cartaGanhadora)
+                {
+                    cartaGanhadora = aux -> lista;
+                }
+                else if(ValorCarta(cartaGanhadora) < ValorCarta(aux -> lista))
+                {
+                    cartaGanhadora = aux -> lista;
+                }
+            }
+            aux -> lista = aux -> lista -> proximo;
+        }
     }
     else
     {
-        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
-        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
-        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
-        InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
+        
     }
-    
 }
 
 void DesenhaBaralho(tListaCartas* baralho, char* param)
@@ -410,7 +421,7 @@ int main(int argc, char *argv[])
                         break;
                 }
                 AvancaListaJogadores(lJogadores, 1);
-                    jogadorAtual = lJogadores -> lista;
+                jogadorAtual = lJogadores -> lista;
             }
 
             while(estado == EJOGO)
