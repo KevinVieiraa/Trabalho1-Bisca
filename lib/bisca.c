@@ -210,12 +210,6 @@ void LiberaListaJogadores(tListaJogadores* jogadores)
 }
 
 
-tCarta* IACartaJogada(tJogador* jogador, int dificuldade)
-{
-    tCarta *retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
-
-    return retirada;
-}
 
 
 

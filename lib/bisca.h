@@ -67,7 +67,6 @@ void LiberaJogador(tJogador* jogador);
 
 void LiberaListaJogadores(tListaJogadores* jogadores);
 
-tCarta* IACartaJogada(tJogador* jogador, int dificuldade);
 
 
 

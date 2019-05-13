@@ -11,15 +11,20 @@
 #include "lib/carta.h"
 #include "lib/bisca.h"
 
+//-----[Estados do jogo]
 #define ESAIR -1
 #define EMENU 0
 #define ECONFIG 1
 #define EAJUDA 2
 #define EJOGO 3
-
-//-----[Dimensões da Janela]
+//-----[Dimensões da janela]
 #define ALTURA 20
 #define LARGURA 72
+//-----[Parametros das cartas]
+#define NADA 1
+#define PONTO 2
+#define TRUNFO 3
+#define BISCA 4
 
 
 void Espera()
@@ -38,7 +43,9 @@ void Espera()
 void PrintaTeste(char* string, int x, int y)
 {
     CursorPosicao(x, y);
+    ApagaLinha(y, 100);
     printf("%s", string);
+    Espera();
 }
 
 void ModificaPontosJogador(tJogador* jogador, int valor)
@@ -74,6 +81,277 @@ void CalculaPontos(tJogador* jogador)
     }
 }
 
+tJogador* DecideVencedor(tListaJogadores* jogadores)
+{
+    tJogador *aux = jogadores -> lista;
+    tJogador *vencedor = jogadores -> primeiro;
+    int tamanhoJogadores = TamJogadores(jogadores);
+
+    for(int i = 1; i <= tamanhoJogadores; i++)
+    {
+        if(PontosJogador(aux) > PontosJogador(vencedor))
+        {
+            vencedor = aux;
+        }
+        aux = aux -> prox;
+    }
+
+    return vencedor;
+}
+
+int CartaTrunfo(tCarta* carta, tCarta* trunfo)
+{
+    if(NaipeCarta(carta) == NaipeCarta(trunfo))
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int CartaPonto(tCarta* carta, tCarta* trunfo)
+{
+    if(!CartaTrunfo(carta, trunfo) && ValorCarta(carta) >= 7 && ValorCarta(carta) <= 9)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int CartaBisca(tCarta* carta, tCarta* trunfo)
+{
+    if(!CartaTrunfo(carta, trunfo) && ValorCarta(carta) >= 10)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int CartaSemValor(tCarta* carta, tCarta* trunfo)
+{
+    if(!CartaBisca(carta, trunfo) && !CartaPonto(carta, trunfo) && !CartaTrunfo(carta, trunfo))
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int TemNadaLista(tListaCartas* cartas, tCarta* trunfo)
+{
+    if(TamListaCartas(cartas) != 0)
+    {
+        tCarta* aux = cartas -> lista;
+        while(aux != NULL)
+        {
+            if(CartaSemValor(aux, trunfo))
+            {
+                return 1;
+            }   
+            aux = aux -> proximo;
+        }
+    }
+    else
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int TemPontoLista(tListaCartas* cartas, tCarta* trunfo)
+{
+    if(TamListaCartas(cartas) != 0)
+    {
+        tCarta* aux = cartas -> lista;
+        while(aux != NULL)
+        {
+            if(CartaPonto(aux, trunfo))
+            {
+                return 1;
+            }   
+            aux = aux -> proximo;
+        }
+    }
+    return 0;
+}
+
+int TemTrunfoLista(tListaCartas* cartas, tCarta* trunfo)
+{
+    if(TamListaCartas(cartas) != 0)
+    {
+        tCarta* aux = cartas -> lista;
+        while(aux != NULL)
+        {
+            if(CartaTrunfo(aux, trunfo))
+            {
+                return 1;
+            }   
+            aux = aux -> proximo;
+        }
+    }
+    return 0;
+}
+
+int TemBiscaLista(tListaCartas* cartas, tCarta* trunfo)
+{
+    if(TamListaCartas(cartas) != 0)
+    {
+        tCarta* aux = cartas -> lista;
+        while(aux != NULL)
+        {
+            if(CartaBisca(aux, trunfo))
+            {
+                return 1;
+            }   
+            aux = aux -> proximo;
+        }
+    }
+    return 0;
+}
+
+
+tCarta* RetiraCartaEscolhida(tListaCartas* cartas, tCarta* trunfo, int param)
+{
+    tCarta *aux = cartas -> lista;
+    while(aux != NULL)
+    {
+        switch(param)
+        {
+            case NADA:
+                if(CartaSemValor(aux, trunfo))
+                {
+                    return RetiraCarta(cartas, PosicaoDaCarta(aux, cartas));
+                }
+                break;
+            case PONTO:
+                if(CartaPonto(aux, trunfo))
+                {
+                    return RetiraCarta(cartas, PosicaoDaCarta(aux, cartas));
+                }
+                break;
+            case TRUNFO:
+                if(CartaTrunfo(aux, trunfo))
+                {
+                    return RetiraCarta(cartas, PosicaoDaCarta(aux, cartas));
+                }
+                break;
+            case BISCA:
+                if(CartaBisca(aux, trunfo))
+                {
+                    return RetiraCarta(cartas, PosicaoDaCarta(aux, cartas));
+                }
+                break;
+        }
+        aux = aux -> proximo;
+    }
+
+    return RetiraCarta(cartas, 1);
+}
+
+tCarta* IACartaJogada(tJogador* jogador, tMesa* mesa, int dificuldade)
+{
+    tCarta *retirada;
+    switch(dificuldade)
+    {
+        case 1:
+            retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+            break;
+        case 2:
+            if(TemBiscaLista(mesa -> monte, mesa -> trunfo))
+            {
+                if(TemTrunfoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, TRUNFO);
+                }
+                else if(TemNadaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, NADA);
+                }
+                else if(TemPontoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, PONTO);
+                }
+                else if(TemBiscaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, BISCA);
+                }
+                else
+                {
+                    retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+                }
+            }
+            else if(TemTrunfoLista(mesa -> monte, mesa -> trunfo))
+            {
+                if(TemTrunfoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, TRUNFO);
+                }
+                else if(TemNadaLista(jogador -> mao, mesa -> trunfo))
+                {   
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, NADA);
+                }
+                else if(TemPontoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, PONTO);
+                }
+                else if(TemBiscaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, BISCA);
+                }
+                else
+                {
+                    retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+                }
+            }
+            else if(TemPontoLista(mesa -> monte, mesa -> trunfo))
+            {
+                if(TemTrunfoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, TRUNFO);
+                }
+                else if(TemNadaLista(jogador -> mao, mesa -> trunfo))
+                {   
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, NADA);
+                }
+                else if(TemPontoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, PONTO);
+                }
+                else if(TemBiscaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, BISCA);
+                }
+                else
+                {
+                    retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+                }
+            }
+            else if(TemNadaLista(mesa -> monte, mesa -> trunfo))
+            {
+                if(TemNadaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, NADA);
+                }
+                else if(TemPontoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, PONTO);
+                }
+                else if(TemTrunfoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, TRUNFO);
+                }
+                else if(TemBiscaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, BISCA);
+                }
+                else 
+                {
+                    retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+                }
+            }
+            break;
+    }
+
+    return retirada;
+}
 
 
 int main(int argc, char *argv[])
@@ -81,12 +359,13 @@ int main(int argc, char *argv[])
     tListaJogadores *lJogadores;
     tMesa *mesa;
     int estado = 0;
+    int dificuldade;
     int nJogadores;
     char opcao;
 
 	srand(time(NULL));
 	
-    DesenhaEspaco(ALTURA + 25);//Funcao necessaria para exibicao dos valores do valgrind (desnecessario se nao utilizar valgrind)
+    DesenhaEspaco(ALTURA + 25);//Funcao necessaria para exibicao dos valores do valgrind (desnecessario se nao usar o valgrind)
 
     /*
     * O jogo ocorre em um loop com condicionais que definem a sequencia 
@@ -166,7 +445,14 @@ int main(int argc, char *argv[])
                 ApagaLinha(ALTURA + 2, 100);
                 printf(">Dificuldade: ");
                 opcao = getchar();
-                
+                if(opcao == '1')
+                {
+                    dificuldade = 1;
+                }
+                if(opcao == '2')
+                {
+                    dificuldade = 2;
+                }
             }
             ApagaLinha(ALTURA + 1, 100);
             ApagaLinha(ALTURA + 2, 100);
@@ -193,8 +479,8 @@ int main(int argc, char *argv[])
         //[Inicio do jogo]
         if(estado == EJOGO)
         {
-            
             tJogador *jogadorAtual;//Aponta para o jogador da vez
+            tJogador *jogadorVencedor;
             tCarta *retirada; //Ponteiro temporario para salvar a carta retirada pelo jogador
             char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
             char tmp[50]; //Guarda o valor temporario da mensagem a ser exibida no chat
@@ -235,6 +521,17 @@ int main(int argc, char *argv[])
 
             while(estado == EJOGO)
             {
+                if(TamListaCartas(jogadorAtual -> mao) == 0)
+                {
+                    sprintf(tmp, "Fim de jogo!");
+                    AtualizaChat(chat, tmp);
+                    jogadorVencedor = DecideVencedor(lJogadores);
+                    sprintf(tmp, "O jogador %d foi o vencedor!", IdJogador(jogadorVencedor));
+                    AtualizaChat(chat, tmp);
+                    ImprimeChat(chat);
+                    break;
+                }
+
                 if(IdJogador(jogadorAtual) == 1)//Vez do jogador
                 {
                     ApagaLinha(28, 100);
@@ -337,7 +634,7 @@ int main(int argc, char *argv[])
                 else
                 {
                     //IA Joga
-                    retirada = IACartaJogada(jogadorAtual, 1);
+                    retirada = IACartaJogada(jogadorAtual, mesa, dificuldade);
                     InsereCarta(mesa -> monte, retirada);
                     sprintf(tmp, "Jogador %d jogou a carta %c%s", IdJogador(jogadorAtual), ConverteValor(ValorCarta(retirada)), RetornaNaipe(NaipeCarta(retirada)));
                     AtualizaChat(chat, tmp);
@@ -363,7 +660,7 @@ int main(int argc, char *argv[])
                         break;
                 }
                 
-                if(comando == '1' || comando == '2' || comando == '3')
+                if(comando == '1' || comando == '2' || comando == '3') //Verifica se o jogador jogou uma carta para prosseguir o jogo
                 {
                     AvancaListaJogadores(lJogadores, 1);
                     jogadorAtual = lJogadores -> lista;
@@ -393,6 +690,15 @@ int main(int argc, char *argv[])
                     
                     DesenhaMesa(mesa -> monte);
                 }
+            }
+
+            if(estado == EJOGO)
+            {
+                sprintf(tmp, "Voltar ao menu (0)");
+                AtualizaChat(chat, tmp);
+                ImprimeChat(chat);
+                Espera();
+                estado = EMENU;
             }
 
             LiberaListaJogadores(lJogadores);
