@@ -1,3 +1,9 @@
+/*
+*   Biblioteca - "Carta"
+* Contem funcoes referentes à estrutura carta e
+* à manipulaçao de listas do tipo carta.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,6 +34,47 @@ tListaCartas* NovaListaCartas()
 void ModificaTamanho(tListaCartas* cartas, int valor)
 {
     cartas -> tamanho += valor;
+}
+
+int ValorCarta(tCarta* carta)
+{
+    return carta -> valor;
+}
+
+int NaipeCarta(tCarta* carta)
+{
+    return carta -> naipe;
+}
+
+int PosicaoDaCarta(tCarta* carta, tListaCartas* cartas)
+{
+    tCarta* aux = cartas -> lista;
+    int pos = 1;
+
+    while(aux != NULL)
+    {
+        if(NaipeCarta(aux) == NaipeCarta (carta) && ValorCarta(aux) == ValorCarta(carta))
+        {
+            return pos;
+        }
+        pos++;
+        aux = aux -> proximo;
+    }
+    return 0;
+}
+
+int BuscaPorNaipe(tListaCartas* cartas, int naipe)
+{
+    tCarta* aux = cartas -> lista;
+    while(aux != NULL)
+    {
+        if(NaipeCarta(aux) == naipe)
+        {
+            return 1;
+        }
+        aux = aux -> proximo;
+    }
+    return 0;
 }
 
 void InsereCarta(tListaCartas* cartas, tCarta* carta)

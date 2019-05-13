@@ -23,6 +23,14 @@ tListaCartas* NovaListaCartas();
 
 void ModificaTamanho(tListaCartas* cartas, int valor);
 
+int ValorCarta(tCarta* carta);
+
+int NaipeCarta(tCarta* carta);
+
+int PosicaoDaCarta(tCarta* carta, tListaCartas* cartas);
+
+int BuscaPorNaipe(tListaCartas* cartas, int naipe);
+
 void InsereCarta(tListaCartas* cartas, tCarta* carta);
 
 void InicializaBaralho(tListaCartas* baralho);

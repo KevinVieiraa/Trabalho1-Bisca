@@ -7,6 +7,8 @@ typedef struct listaCartas tListaCartas;
 
 typedef struct jogador tJogador;
 
+typedef struct listaJogadores tListaJogadores;
+
 typedef struct mesa tMesa;
 
 /*
@@ -89,9 +91,13 @@ void DesenhaItensConfig();
 
 void DesenhaItensJogo();
 
+void DesenhaBaralho(tListaCartas* baralho, char* param);
+
+void DesenhaMaos(tListaJogadores* jogadores, int numJogadores, char* param);
+
 void DesenhaEspaco(int altura);
 
-void DesenhaPontuacao(int jogadores);
+void DesenhaPontuacao(tListaJogadores* jogadores);
 
 /*
 *  > Apaga uma area do terminal informada
@@ -109,6 +115,10 @@ void ImprimeChat(char chat[5][50]);
 void AtualizaChat(char chat[5][50], char string[50]);
 
 void DesenhaMao(tListaCartas* mao, int posX, int posY, char* param);
+
+void MostraBaralho(tListaCartas* baralho);
+
+void DesenhaTrunfo(tCarta* trunfo);
 
 void DesenhaMesa(tListaCartas* monte);
 #endif

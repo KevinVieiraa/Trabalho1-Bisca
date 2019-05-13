@@ -1,34 +1,41 @@
+/*
+*   Biblioteca - "Graficos"
+* Contem funcoes responsaveis pelo conteudo 
+* visual do programa. 
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "graficos.h"
 #include "carta.h"
+#include "bisca.h"
 
+//-----[Valores dos naipes]
 #define PAUS 1
 #define OUROS 2
 #define ESPADAS 3
 #define COPAS 4
-
-//-----[Simbolos dos Naipes]
+//-----[Simbolos dos ñaipes]
 #define SIMBOLOPAUS "\u2663"
 #define SIMBOLOOUROS "\u2666"
 #define SIMBOLOESPADAS "\u2660"
 #define SIMBOLOCOPAS "\u2665"
-//-----[Borda Simples]
+//-----[Borda simples]
 #define DBOXH "\u2500"
 #define DBOXV "\u2502"
 #define DBOXUR "\u2514"
 #define DBOXUL "\u2518"
 #define DBOXDL "\u2510"
 #define DBOXDR "\u250C"
-//-----[Borda Dupla]
+//-----[Borda dupla]
 #define DDBOXH "\u2550"
 #define DDBOXV "\u2551"
 #define DDBOXUR "\u255A"
 #define DDBOXUL "\u255D"
 #define DDBOXDL "\u2557"
 #define DDBOXDR "\u2554"
-//-----[Dimensões da Janela]
+//-----[Dimensões da janela]
 #define ALTURA 20
 #define LARGURA 72
 
@@ -189,12 +196,16 @@ void DesenhaEspaco(int altura)
     }
 }
 
-void DesenhaPontuacao(int jogadores)
+void DesenhaPontuacao(tListaJogadores* jogadores)
 {
-    for(int i = 1; i <= jogadores; i++)
+    int tamanho = TamJogadores(jogadores);
+    tJogador *aux = jogadores -> primeiro;
+    
+    for(int i = 1; i <= tamanho; i++)
     {
         CursorPosicao(LARGURA - 13, ALTURA + 2 + i);
-        printf("P%d: %d", i, 0);
+        printf("P%d: %d", aux -> id, aux -> pontos);
+        aux = aux -> prox;
     }
 }
 
@@ -268,7 +279,7 @@ void ApagaLinha(int linha, int tamanho)
     CursorPosicao(0, linha);
 }
 
-void DesenhaItensJogo(int jogadores)
+void DesenhaItensJogo(tListaJogadores* jogadores)
 {
     DesenhaBordaDupla(LARGURA, ALTURA, 0, 0);
     DesenhaBordaDupla(LARGURA - 21, 6, 0, ALTURA + 1);
@@ -276,6 +287,59 @@ void DesenhaItensJogo(int jogadores)
     CursorPosicao(LARGURA - 15, ALTURA + 2);
     printf(">PONTUACAO<");
     DesenhaPontuacao(jogadores);
+}
+
+void DesenhaBaralho(tListaCartas* baralho, char* param)
+{
+    tCarta *tmp = baralho -> lista;
+    int parametro = strcmp(param, "1") == 0;
+    if(TamListaCartas(baralho) != 0)
+    {
+        if(parametro)
+        {
+            CursorPosicao(1, 5);
+            printf("Restantes:");
+            CursorPosicao(1, 6);
+            printf("%d Cartas", TamListaCartas(baralho));
+            DesenhaCarta(tmp -> naipe, tmp -> valor, 1, 7);
+        }
+        else
+        {
+            DesenhaCaixa(1, 7, 7, 5);
+            CursorPosicao(3, 9);
+            printf("%d", TamListaCartas(baralho));
+        }
+    }
+    else
+    {
+        ApagaArea(1, 5, 10, 6);
+        DesenhaCaixa(1, 7, 7, 5);
+        CursorPosicao(3, 9);
+    }
+}
+
+void DesenhaMaos(tListaJogadores* jogadores, int numJogadores, char* param)
+{
+    tJogador *aux = jogadores -> primeiro;
+    for(int i = 1; i < numJogadores + 1; i++)
+    {
+        switch(IdJogador(aux))
+        {
+            case 1:
+                DesenhaMao(aux -> mao, 19, 15, "1");
+                break;
+            case 2:
+                DesenhaMao(aux -> mao, 19, 1, param);
+                break;
+            case 3:
+                DesenhaMao(aux -> mao, 49, 1, param);
+                break;
+            case 4:
+                DesenhaMao(aux -> mao, 49, 15, param);
+                break;
+        }
+        aux = aux -> prox;
+    }
 }
 
 char* RetornaNaipe(int naipe)
@@ -396,6 +460,32 @@ void DesenhaMao(tListaCartas *mao, int posX, int posY, char* param)
             }
             break;
     }
+}
+
+void MostraBaralho(tListaCartas* baralho)
+{
+    tCarta *aux = baralho -> lista;
+
+    ApagaArea(1, 22, 50, 5);
+    CursorPosicao(5, 22);
+    printf("Cartas no baralho:");
+    for(int i = 1; i <= 4; i++)
+    {
+        CursorPosicao(5, 22 + i);
+        for(int j = 1; j <= TamListaCartas(baralho)/4; j++)
+        {
+            ImprimeCarta(aux);
+            printf(" ");
+            aux = aux -> proximo;
+        }
+    }
+}
+
+void DesenhaTrunfo(tCarta* trunfo)
+{
+    CursorPosicao(1, 12);
+    printf("Trunfo:");
+    DesenhaCarta(trunfo -> naipe, trunfo -> valor, 1, 13);
 }
 
 void DesenhaMesa(tListaCartas *monte)

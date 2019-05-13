@@ -1,8 +1,12 @@
+/*
+*   Trabalho - Estrutura de Dados I
+*             Turma: 01
+*        Kevin Vieira Izabel
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 #include "lib/graficos.h"
 #include "lib/carta.h"
 #include "lib/bisca.h"
@@ -17,153 +21,18 @@
 #define ALTURA 20
 #define LARGURA 72
 
-//-----[Valores dos Simbolos(char)]
-#define SIMBOLOPAUS "\u2663"
-#define SIMBOLOOUROS "\u2666"
-#define SIMBOLOESPADAS "\u2660"
-#define SIMBOLOCOPAS "\u2665"
 
-//-----[Valores dos Simbolos(int)]
-#define PAUS 1
-#define OUROS 2
-#define ESPADAS 3
-#define COPAS 4
-
-
-tListaJogadores* NovaListaJogadores()
+void Espera()
 {
-    tListaJogadores *nova = (tListaJogadores*)malloc(sizeof(tListaJogadores));
-
-    nova -> lista = NULL;
-    nova -> primeiro = NULL;
-    nova -> ultimo = NULL;
-    nova -> tamanho = 0;
-
-    return nova;
-}
-
-void ModificaTamanhoJogadores(tListaJogadores* lista, int valor)
-{
-    lista -> tamanho += valor;
-}
-
-void InsereJogador(tListaJogadores* jogadores, tJogador* jogador)
-{
-    if(jogadores != NULL && jogador != NULL)
+    while(1)
     {
-        if(jogadores -> lista == NULL)
+        ApagaLinha(28, 100);
+        printf(">");
+        if (getchar() == '0')
         {
-            jogadores -> lista = jogador;
-            jogadores -> primeiro = jogador;
-            jogadores -> ultimo = jogadores -> lista;
-            jogador -> prox = jogador;
-            ModificaTamanhoJogadores(jogadores, 1);
-        }
-        else
-        {
-            jogador -> prox = jogadores -> lista;
-            jogadores -> ultimo -> prox = jogador;
-            jogadores -> ultimo = jogador;
-            ModificaTamanhoJogadores(jogadores, 1);
+            break;
         }
     }
-}
-
-void LiberaListaJogadores(tListaJogadores* jogadores)
-{
-    jogadores -> lista = jogadores -> primeiro;
-    tListaJogadores *tmp = jogadores;
-    jogadores -> ultimo -> prox = NULL;
-    while(tmp -> lista != NULL)
-    {
-        tJogador *aux = tmp -> lista -> prox;
-        LiberaJogador(tmp->lista);
-        tmp -> lista = aux;
-    }
-    free(jogadores);
-}
-
-void AdicionaJogadores(tListaJogadores* jogadores, tListaCartas* listaOrigem, int qtd)
-{
-    for(int i = 1; i <= qtd; i++)
-    {
-        tJogador *tmp = CriaJogador(listaOrigem, i);
-        InsereJogador(jogadores, tmp);
-    }
-}
-
-int TamJogadores(tListaJogadores* jogadores)
-{
-    return jogadores -> tamanho;
-}
-
-void ResetaListaJogadores(tListaJogadores* jogadores)
-{
-    jogadores -> lista = jogadores -> primeiro;
-}
-
-void AvancaListaJogadores(tListaJogadores* jogadores, int qtd)
-{
-    for(int i = 1; i <= qtd; i++)
-    {
-        jogadores -> lista = jogadores -> lista -> prox;
-    }
-}
-
-
-tJogador* DecidePrimeiroJogador(tListaJogadores* jogadores)
-{
-    int idSelecionado = 1 /*+ rand() % TamJogadores(jogadores)*/;
-    while(jogadores -> lista -> id != idSelecionado)
-    {
-        AvancaListaJogadores(jogadores, 1);
-    }
-    return jogadores -> lista;
-}
-
-void CortaBaralho(tMesa* mesa)
-{
-    InsereCarta(mesa -> baralho, RetiraCarta(mesa -> baralho, 1 + rand() % TamListaCartas(mesa -> baralho)));
-    mesa -> trunfo = mesa -> baralho -> ultimo;
-}
-
-int IdJogador(tJogador* jogador)
-{
-    return jogador -> id;
-}
-
-int PontosJogador(tJogador* jogador)
-{
-    return jogador -> pontos;
-}
-
-int ValorCarta(tCarta* carta)
-{
-    return carta -> valor;
-}
-
-int NaipeCarta(tCarta* carta)
-{
-    return carta -> naipe;
-}
-
-int BuscaPorNaipe(tListaCartas* cartas, int naipe)
-{
-    tCarta* aux = cartas -> lista;
-    while(aux != NULL)
-    {
-        if(NaipeCarta(aux) == naipe)
-        {
-            return 1;
-        }
-        aux = aux -> proximo;
-    }
-    return 0;
-}
-
-void BuscaPorValor()
-{
-
 }
 
 void PrintaTeste(char* string, int x, int y)
@@ -172,86 +41,40 @@ void PrintaTeste(char* string, int x, int y)
     printf("%s", string);
 }
 
-void DecideRodada(tMesa* mesa, tListaJogadores* jogadores)
-{   
-    tCarta* cartaGanhadora;
-    tListaCartas* aux = mesa -> monte;
+void ModificaPontosJogador(tJogador* jogador, int valor)
+{
+    jogador -> pontos += valor;
+}
 
-    if(BuscaPorNaipe(mesa -> monte, NaipeCarta(mesa -> trunfo)))
+void CalculaPontos(tJogador* jogador)
+{
+    tCarta *aux = jogador -> pontosCartas -> lista;
+    ModificaPontosJogador(jogador, -jogador -> pontos);
+    while(aux != NULL)
     {
-        while(aux -> lista != NULL)
+        switch(ValorCarta(aux))
         {
-            if(NaipeCarta(aux -> lista) == NaipeCarta(mesa -> trunfo))
-            {
-                if(NULL == cartaGanhadora)
-                {
-                    cartaGanhadora = aux -> lista;
-                }
-                else if(ValorCarta(cartaGanhadora) < ValorCarta(aux -> lista))
-                {
-                    cartaGanhadora = aux -> lista;
-                }
-            }
-            aux -> lista = aux -> lista -> proximo;
+            case 7:
+                ModificaPontosJogador(jogador, 2);
+                break;
+            case 8:
+                ModificaPontosJogador(jogador, 3);
+                break;
+            case 9:
+                ModificaPontosJogador(jogador, 4);
+                break;
+            case 10:
+                ModificaPontosJogador(jogador, 10);
+                break;
+            case 11:
+                ModificaPontosJogador(jogador, 11);
+                break;
         }
-    }
-    else
-    {
-        
-    }
-}
-
-void DesenhaBaralho(tListaCartas* baralho, char* param)
-{
-    tCarta *tmp = baralho -> lista;
-    int parametro = strcmp(param, "1") == 0;
-    if(parametro)
-    {
-        CursorPosicao(1, 5);
-        printf("Restantes:");
-        CursorPosicao(1, 6);
-        printf("%d Cartas", TamListaCartas(baralho));
-        DesenhaCarta(tmp -> naipe, tmp -> valor, 1, 7);
-    }
-    else
-    {
-        DesenhaCaixa(1, 7, 7, 5);
-        CursorPosicao(3, 9);
-        printf("%d", TamListaCartas(baralho));
+        aux = aux -> proximo;
     }
 }
 
 
-void DesenhaTrunfo(tCarta* trunfo)
-{
-    CursorPosicao(1, 12);
-    printf("Trunfo:");
-    DesenhaCarta(trunfo -> naipe, trunfo -> valor, 1, 13);
-}
-
-void MostraBaralho(tListaCartas* baralho)
-{
-    tCarta *aux = baralho -> lista;
-
-    ApagaArea(1, 22, 50, 5);
-    CursorPosicao(5, 22);
-    printf("Cartas no baralho:");
-    for(int i = 1; i <= 4; i++)
-    {
-        CursorPosicao(5, 22 + i);
-        for(int j = 1; j <= TamListaCartas(baralho)/4; j++)
-        {
-            ImprimeCarta(aux);
-            printf(" ");
-            aux = aux -> proximo;
-        }
-    }
-}
-
-int IdentificadorJogador(tJogador* jogador)
-{
-    return jogador -> id;
-}
 
 int main(int argc, char *argv[])
 {
@@ -397,32 +220,18 @@ int main(int argc, char *argv[])
             sprintf(tmp, "O trunfo da partida eh \"%s\"", RetornaNaipe(mesa -> trunfo -> naipe));
             AtualizaChat(chat, tmp);
             ImprimeChat(chat);
-
-            DesenhaItensJogo(nJogadores);
+            
+            DesenhaItensJogo(lJogadores);
             DesenhaBaralho(mesa -> baralho, argv[1]);
             DesenhaTrunfo(mesa -> trunfo);
             CursorPosicao(0, 28);
             
-            for(int i = 1; i < nJogadores + 1; i++)
-            {
-                switch(IdJogador(jogadorAtual))
-                {
-                    case 1:
-                        DesenhaMao(jogadorAtual -> mao, 19, 15, "1");
-                        break;
-                    case 2:
-                        DesenhaMao(jogadorAtual -> mao, 19, 1, argv[1]);
-                        break;
-                    case 3:
-                        DesenhaMao(jogadorAtual -> mao, 49, 1, argv[1]);
-                        break;
-                    case 4:
-                        DesenhaMao(jogadorAtual -> mao, 49, 15, argv[1]);
-                        break;
-                }
-                AvancaListaJogadores(lJogadores, 1);
-                jogadorAtual = lJogadores -> lista;
-            }
+            DesenhaMaos(lJogadores, nJogadores, argv[1]);
+
+            sprintf(tmp, "Iniciando partida... (0)");
+            AtualizaChat(chat, tmp);
+            ImprimeChat(chat);
+            Espera();
 
             while(estado == EJOGO)
             {
@@ -563,12 +372,31 @@ int main(int argc, char *argv[])
                 if(TamListaCartas(mesa -> monte) == nJogadores)
                 {
                     DecideRodada(mesa, lJogadores);
+                    jogadorAtual = lJogadores -> lista;
+                    CalculaPontos(jogadorAtual);
+                    DesenhaPontuacao(lJogadores);
+
+                    sprintf(tmp, "O jogador %d venceu a rodada (0)", IdJogador(jogadorAtual));
+                    AtualizaChat(chat, tmp);
+                    ImprimeChat(chat);
+                    Espera();
+                    
+                    if(TamListaCartas(mesa -> baralho) != 0)
+                    {
+                        sprintf(tmp, "Distribuindo cartas...");
+                        AtualizaChat(chat, tmp);
+                        ImprimeChat(chat);
+                        DistribuiCartas(lJogadores, mesa -> baralho);
+                        DesenhaMaos(lJogadores, nJogadores, argv[1]);
+                        DesenhaBaralho(mesa -> baralho, argv[1]);
+                    }
+                    
+                    DesenhaMesa(mesa -> monte);
                 }
             }
 
             LiberaListaJogadores(lJogadores);
             LiberaMesa(mesa);
-            estado = EMENU;
             ApagaArea(0, 22, 73, 7);
         }
     }

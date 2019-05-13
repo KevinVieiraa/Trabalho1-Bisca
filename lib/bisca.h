@@ -35,7 +35,37 @@ typedef struct mesa
 
 tJogador* CriaJogador(tListaCartas* lista, int identificador);
 
+tListaJogadores* NovaListaJogadores();
+
+void ModificaTamanhoJogadores(tListaJogadores* lista, int valor);
+
+int IdJogador(tJogador* jogador);
+
+int PontosJogador(tJogador* jogador);
+
+int IdentificadorJogador(tJogador* jogador);
+
+int TamJogadores(tListaJogadores* jogadores);
+
+void InsereJogador(tListaJogadores* jogadores, tJogador* jogador);
+
+void AdicionaJogadores(tListaJogadores* jogadores, tListaCartas* listaOrigem, int qtd);
+
+void ResetaListaJogadores(tListaJogadores* jogadores);
+
+void AvancaListaJogadores(tListaJogadores* jogadores, int qtd);
+
+tJogador* DecidePrimeiroJogador(tListaJogadores* jogadores);
+
+void CortaBaralho(tMesa* mesa);
+
+void DistribuiCartas(tListaJogadores* jogadores, tListaCartas* origem);
+
+void DecideRodada(tMesa* mesa, tListaJogadores* jogadores);
+
 void LiberaJogador(tJogador* jogador);
+
+void LiberaListaJogadores(tListaJogadores* jogadores);
 
 tCarta* IACartaJogada(tJogador* jogador, int dificuldade);
 
