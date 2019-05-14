@@ -601,18 +601,13 @@ int main(int argc, char *argv[])
                                 DesenhaBaralho(mesa -> baralho, argv[1]);
                             }
                             break;
-
-                        case 'C':
-                        case 'c':
-                            break;
                         //Mostra o baralho na ordem
                         case 'B':
                         case 'b':
                             if(strcmp(argv[1], "1") == 0)
                             {
-                                MostraBaralho(mesa -> baralho);
-                                getchar();
-                                getchar();
+                                MostraBaralho(mesa -> baralho, nJogadores);
+                                Espera();
                             }
                             break;
                         //Encerra a partida e volta ao menu

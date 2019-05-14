@@ -116,7 +116,7 @@ void AtualizaChat(char chat[5][50], char string[50]);
 
 void DesenhaMao(tListaCartas* mao, int posX, int posY, char* param);
 
-void MostraBaralho(tListaCartas* baralho);
+void MostraBaralho(tListaCartas* baralho, int nJogadores);
 
 void DesenhaTrunfo(tCarta* trunfo);
 

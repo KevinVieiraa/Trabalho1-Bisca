@@ -240,7 +240,29 @@ void DesenhaItensMenu()
 
 void DesenhaItensAjuda()
 {
-    CursorPosicao(28, 14);
+    CursorPosicao(3, 2);
+    printf("Instrucoes");
+
+    CursorPosicao(33, 4);
+    printf("[Jogo]");
+    CursorPosicao(12, 5);
+    printf("-'1', '2' e '3': selecionam a carta a ser jogada.");
+    CursorPosicao(12, 6);
+    printf("-'0': continua apos uma pausa feita pelo jogo.");
+    CursorPosicao(12, 7);
+    printf("-'M': retorna ao menu principal.");
+    CursorPosicao(12, 8);
+    printf("-'S': encerra o programa.");
+    
+    CursorPosicao(30, 10);
+    printf("[Jogo\\Debug]");
+    
+    CursorPosicao(12, 11);
+    printf("-'B': exibe o baralho na ordem.");
+    CursorPosicao(12, 12);
+    printf("-'E': embaralha novamente o baralho.");
+
+    CursorPosicao(30, 17);
     printf("(0) - Voltar");
     CursorPosicao(0, ALTURA+1);
 }
@@ -326,15 +348,23 @@ void DesenhaMaos(tListaJogadores* jogadores, int numJogadores, char* param)
         switch(IdJogador(aux))
         {
             case 1:
+                CursorPosicao(17, 19);
+                printf("P1");
                 DesenhaMao(aux -> mao, 19, 15, "1");
                 break;
             case 2:
+                CursorPosicao(17, 1);
+                printf("P2");
                 DesenhaMao(aux -> mao, 19, 1, param);
                 break;
             case 3:
+                CursorPosicao(47, 1);
+                printf("P3");
                 DesenhaMao(aux -> mao, 49, 1, param);
                 break;
             case 4:
+                CursorPosicao(47, 19);
+                printf("P4");
                 DesenhaMao(aux -> mao, 49, 15, param);
                 break;
         }
@@ -461,21 +491,23 @@ void DesenhaMao(tListaCartas *mao, int posX, int posY, char* param)
             break;
     }
 }
-
-void MostraBaralho(tListaCartas* baralho)
+void MostraBaralho(tListaCartas* baralho, int nJogadores)
 {
     tCarta *aux = baralho -> lista;
 
     ApagaArea(1, 22, 50, 5);
-    CursorPosicao(5, 22);
+    CursorPosicao(1, 22);
     printf("Cartas no baralho:");
-    for(int i = 1; i <= 4; i++)
+    for(int i = 1; i <= nJogadores; i++)
     {
-        CursorPosicao(5, 22 + i);
-        for(int j = 1; j <= TamListaCartas(baralho)/4; j++)
+        CursorPosicao(1, 22 + i);
+        for(int j = 1; j <= TamListaCartas(baralho)/nJogadores; j++)
         {
             ImprimeCarta(aux);
-            printf(" ");
+            if( j != TamListaCartas(baralho)/nJogadores )
+            {
+                printf(" ");
+            }
             aux = aux -> proximo;
         }
     }

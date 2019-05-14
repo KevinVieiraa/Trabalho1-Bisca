@@ -6,7 +6,7 @@ OBJ = trab1.o lib/graficos.o lib/carta.o lib/bisca.o
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-trab1: $(OBJ)
+bisca: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 clean: clib
@@ -15,8 +15,8 @@ clean: clib
 clib:
 	rm -f lib/*o
 	
-valgrind: trab1
-	valgrind ./trab1 1
+valgrind: bisca
+	valgrind -v ./bisca 1
 	
 add:
 	git add .
