@@ -86,173 +86,173 @@ int PontosJogador(tJogador* jogador);
 int TamJogadores(tListaJogadores* jogadores);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Modifica a quantidade de pontos de um jogador
+* - Inputs: O jogador a ser modificado e o valor
+* - Output: O jogador com os pontos modificados
+* - Pre-condicao: Jogador deve ter sido inicializado
+* - Pos-condicao: Pontos do jogador alterados
 */
 void ModificaPontosJogador(tJogador* jogador, int valor);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Calcula os pontos totais de um jogador de acordo com as cartas que possui
+* - Inputs: O jogador a calcular os pontos
+* - Output: O jogador com os pontos calculados
+* - Pre-condicao: Jogador deve ter sido inicializado
+* - Pos-condicao: Pontos do jogador calculados
 */
 void CalculaPontos(tJogador* jogador);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Insere um jogador em uma lista circular
+* - Inputs: Jogador a ser inserido na lista
+* - Output: Lista devidamente modificada
+* - Pre-condicao: Jogador deve ter sido inicializado
+* - Pos-condicao: Jogador inserido apontando para o primeiro jogador da lista
 */
 void InsereJogador(tListaJogadores* jogadores, tJogador* jogador);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Cria e adiciona os jogadores da partida numa lista
+* - Inputs: Uma lista, a lista de cartas e a quantidade de jogadores
+* - Output: Lista com todos os jogadores inseridos
+* - Pre-condicao: Lista de jogadores e de cartas devem ter sido inicializadas
+* - Pos-condicao: Jogadores inseridos na lista
 */
 void AdicionaJogadores(tListaJogadores* jogadores, tListaCartas* listaOrigem, int qtd);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Faz o apontador atual "lista" apontar para o primeiro
+* - Inputs: A lista a ser resetada
+* - Output: "lista" apontando para o primeiro elemento
+* - Pre-condicao: Lista deve ter sido inicializada
+* - Pos-condicao: Apontador "lista" igual ao apontador "primeiro"
 */
 void ResetaListaJogadores(tListaJogadores* jogadores);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Faz o apontador atual "lista" apontar para o proximo jogador
+* - Inputs: A lista a ser modificada
+* - Output: "lista" apontando para o proximo elemento
+* - Pre-condicao: Lista deve ter sido inicializada
+* - Pos-condicao: Apontador "lista" igual ao apontador "lista -> proximo"
 */
 void AvancaListaJogadores(tListaJogadores* jogadores, int qtd);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Escolhe o primeiro jogador a jogar a paritida
+* - Inputs: A lista de jogadores e o tamanho dela
+* - Output: Um ponteiro apontando para o jogador da lista a ser o primeiro
+* - Pre-condicao: A lista deve ter sido inicializada
+* - Pos-condicao: Ponteiro valido
 */
 tJogador* DecidePrimeiroJogador(tListaJogadores* jogadores);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Inicializa o baralho com os devidos naipes e valores
+* - Inputs: Um ponteiro para uma lista de cartas
+* - Output: Uma lista de cartas com os valores corretos
+* - Pre-condicao: O ponteiro para a lista deve ter sido inicializado
+* - Pos-condicao: Todas as cartas inseridas na lista
 */
 void InicializaBaralho(tListaCartas* baralho);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Escolhe o trunfo da partida
+* - Inputs: A mesa atual da partida
+* - Output: O trunfo devidamente escolhido
+* - Pre-condicao: A mesa deve ter sido inicializada
+* - Pos-condicao: O trunfo apontado corretamente
 */
 void CortaBaralho(tMesa* mesa);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Saca uma carta da lista
+* - Inputs: A lista a ser retirada a carta e a lista destino da carta
+* - Output: A carta na lista destino
+* - Pre-condicao: Ambas listas devem ter sido inicializadas
+* - Pos-condicao: O endereço da carta removido da lista inicial e inserido na final
 */
 void Saca(tListaCartas* baralho, tListaCartas* maoDestino);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Distribui as cartas para todos os jogadores
+* - Inputs: A lista de jogadores e a lista de cartas origem
+* - Output: As cartas distribuidas
+* - Pre-condicao: As listas de jogadores e de cartas devem ter sido inicializadas
+* - Pos-condicao: Todos receberem uma carta
 */
 void DistribuiCartas(tListaJogadores* jogadores, tListaCartas* origem);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > A I.A. Decide uma carta a ser jogada de acordo com as regras
+* - Inputs: O jogador que irá jogar, a mesa destino e o nivel de dificuldade
+* - Output: Uma carta escolhida
+* - Pre-condicao: Jogador e mesa devem ser inicializados e a dificuldade válida.
+* - Pos-condicao: Um ponteiro valido para uma carta escolhida
 */
 tCarta* IACartaJogada(tJogador* jogador, tMesa* mesa, int dificuldade);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Decide quem venceu a rodada atual
+* - Inputs: A mesa no estado atual e a lista de jogadores
+* - Output: Nenhum
+* - Pre-condicao: A mesa e jogadores devem ter sido inicializados
+* - Pos-condicao: A lista de jogadores apontando para o vencedor da rodada
 */
 void DecideRodada(tMesa* mesa, tListaJogadores* jogadores);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Decide o vencedor da partida
+* - Inputs: A lista de jogadores
+* - Output: O ponteiro para o jogador vencedor
+* - Pre-condicao: A lista de jogadores ter sido inicializada
+* - Pos-condicao: O jogador retornado deve ser valido
 */
 tJogador* DecideVencedor(tListaJogadores* jogadores);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Libera a variavel do tipo jogador da memoria
+* - Inputs: A variavel a ser liberada
+* - Output: Nenhum
+* - Pre-condicao: Nenhum
+* - Pos-condicao: Posiçao de memoria liberada
 */
 void LiberaJogador(tJogador* jogador);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Libera a variavel do tipo lista de jogadores da memoria
+* - Inputs: A variiavel a ser liberada
+* - Output: Nenhum
+* - Pre-condicao: Nenhum
+* - Pos-condicao: Posicao de memoria liberada
 */
 void LiberaListaJogadores(tListaJogadores* jogadores);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Inicializa uma variavel do tipo mesa
+* - Inputs: Nenhum
+* - Output: Um ponteiro para uma variavel mesa inicializada
+* - Pre-condicao: Nenhum
+* - Pos-condicao: Ponteiro retornado seja valido
 */
 tMesa* InicializaMesa();
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Libera a variavel do tipo mesa da memoria
+* - Inputs: A variiavel a ser liberada
+* - Output: Nenhum
+* - Pre-condicao: Nenhum
+* - Pos-condicao: Posicao de memoria liberada
 */
 void LiberaMesa(tMesa *mesa);
 
 /*
-*  > a
-* - Inputs: 
-* - Output: 
-* - Pre-condicao: 
-* - Pos-condicao: 
+*  > Espera o char '0' para poder continuar a executar o programa
+* - Inputs: Nenhum
+* - Output: Nenhum
+* - Pre-condicao: Nenhum
+* - Pos-condicao: Char correto inserido e execução continuada
 */
 void Espera();
 #endif
