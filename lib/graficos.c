@@ -209,17 +209,6 @@ void DesenhaPontuacao(tListaJogadores* jogadores)
     }
 }
 
-void DesenhaIndicesCartas()
-{
-        CursorPosicao(28, 14);
-        printf("1");
-        CursorPosicao(35, 14);
-        printf("2");
-        CursorPosicao(42, 14);
-        printf("3");
-}
-
-
 void DesenhaItensMenu()
 {
     CursorPosicao(28, 12);

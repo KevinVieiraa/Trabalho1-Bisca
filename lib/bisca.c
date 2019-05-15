@@ -3,7 +3,6 @@
 * Contem funcoes especificas referentes ao jogo de bisca,
 * como decisão de jogada pela "cpu", distribuiçao de cartas, etc...
 */
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,6 +10,11 @@
 #include "bisca.h"
 #include "graficos.h"
 
+//-----[Parametros das cartas]
+#define NADA 1
+#define PONTO 2
+#define TRUNFO 3
+#define BISCA 4
 
 tJogador* CriaJogador(tListaCartas* lista, int identificador)
 {
@@ -58,14 +62,42 @@ int PontosJogador(tJogador* jogador)
     return jogador -> pontos;
 }
 
-int IdentificadorJogador(tJogador* jogador)
-{
-    return jogador -> id;
-}
-
 int TamJogadores(tListaJogadores* jogadores)
 {
     return jogadores -> tamanho;
+}
+
+void ModificaPontosJogador(tJogador* jogador, int valor)
+{
+    jogador -> pontos += valor;
+}
+
+void CalculaPontos(tJogador* jogador)
+{
+    tCarta *aux = jogador -> pontosCartas -> lista;
+    ModificaPontosJogador(jogador, -jogador -> pontos);
+    while(aux != NULL)
+    {
+        switch(ValorCarta(aux))
+        {
+            case 7:
+                ModificaPontosJogador(jogador, 2);
+                break;
+            case 8:
+                ModificaPontosJogador(jogador, 3);
+                break;
+            case 9:
+                ModificaPontosJogador(jogador, 4);
+                break;
+            case 10:
+                ModificaPontosJogador(jogador, 10);
+                break;
+            case 11:
+                ModificaPontosJogador(jogador, 11);
+                break;
+        }
+        aux = aux -> proximo;
+    }
 }
 
 void InsereJogador(tListaJogadores* jogadores, tJogador* jogador)
@@ -122,10 +154,26 @@ tJogador* DecidePrimeiroJogador(tListaJogadores* jogadores)
     return jogadores -> lista;
 }
 
+void InicializaBaralho(tListaCartas* baralho)
+{
+    for(int i = 1;i <= 4;i++)
+	{
+		for(int j = 1;j <= 10;j++)
+		{
+			InsereCarta(baralho, NovaCarta(j + 1, i));
+		}
+	}
+}
+
 void CortaBaralho(tMesa* mesa)
 {
     InsereCarta(mesa -> baralho, RetiraCarta(mesa -> baralho, 1 + rand() % TamListaCartas(mesa -> baralho)));
     mesa -> trunfo = mesa -> baralho -> ultimo;
+}
+
+void Saca(tListaCartas* origem, tListaCartas* destino)
+{
+    InsereCarta(destino, RetiraCarta(origem, 1));
 }
 
 void DistribuiCartas(tListaJogadores* jogadores, tListaCartas* origem)
@@ -138,6 +186,113 @@ void DistribuiCartas(tListaJogadores* jogadores, tListaCartas* origem)
         aux = aux -> prox;
     }
     aux = aux -> prox;
+}
+
+tCarta* IACartaJogada(tJogador* jogador, tMesa* mesa, int dificuldade)
+{
+    tCarta *retirada;
+    switch(dificuldade)
+    {
+        case 1:
+            retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+            break;
+        case 2:
+            if(TemBiscaLista(mesa -> monte, mesa -> trunfo))
+            {
+                if(TemTrunfoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, TRUNFO);
+                }
+                else if(TemNadaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, NADA);
+                }
+                else if(TemPontoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, PONTO);
+                }
+                else if(TemBiscaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, BISCA);
+                }
+                else
+                {
+                    retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+                }
+            }
+            else if(TemTrunfoLista(mesa -> monte, mesa -> trunfo))
+            {
+                if(TemTrunfoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, TRUNFO);
+                }
+                else if(TemNadaLista(jogador -> mao, mesa -> trunfo))
+                {   
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, NADA);
+                }
+                else if(TemPontoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, PONTO);
+                }
+                else if(TemBiscaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, BISCA);
+                }
+                else
+                {
+                    retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+                }
+            }
+            else if(TemPontoLista(mesa -> monte, mesa -> trunfo))
+            {
+                if(TemTrunfoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, TRUNFO);
+                }
+                else if(TemNadaLista(jogador -> mao, mesa -> trunfo))
+                {   
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, NADA);
+                }
+                else if(TemPontoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, PONTO);
+                }
+                else if(TemBiscaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, BISCA);
+                }
+                else
+                {
+                    retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+                }
+            }
+            else if(TemNadaLista(mesa -> monte, mesa -> trunfo))
+            {
+                if(TemNadaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, NADA);
+                }
+                else if(TemPontoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, PONTO);
+                }
+                else if(TemTrunfoLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, TRUNFO);
+                }
+                else if(TemBiscaLista(jogador -> mao, mesa -> trunfo))
+                {
+                    retirada = RetiraCartaEscolhida(jogador -> mao, mesa -> trunfo, BISCA);
+                }
+                else 
+                {
+                    retirada = RetiraCarta(jogador -> mao, 1 + rand() % TamListaCartas(jogador -> mao));
+                }
+            }
+            break;
+    }
+
+    return retirada;
 }
 
 void DecideRodada(tMesa* mesa, tListaJogadores* jogadores)
@@ -185,7 +340,24 @@ void DecideRodada(tMesa* mesa, tListaJogadores* jogadores)
     {
         InsereCarta(jogadores -> lista -> pontosCartas, RetiraCarta(mesa -> monte, 1));
     }
-    
+}
+
+tJogador* DecideVencedor(tListaJogadores* jogadores)
+{
+    tJogador *aux = jogadores -> lista;
+    tJogador *vencedor = jogadores -> primeiro;
+    int tamanhoJogadores = TamJogadores(jogadores);
+
+    for(int i = 1; i <= tamanhoJogadores; i++)
+    {
+        if(PontosJogador(aux) > PontosJogador(vencedor))
+        {
+            vencedor = aux;
+        }
+        aux = aux -> prox;
+    }
+
+    return vencedor;
 }
 
 void LiberaJogador(tJogador* jogador)
@@ -210,12 +382,6 @@ void LiberaListaJogadores(tListaJogadores* jogadores)
 }
 
 
-
-
-
-
-
-
 tMesa* InicializaMesa()
 {
     tMesa *novaMesa = (tMesa*)malloc(sizeof(tMesa));
@@ -235,3 +401,15 @@ void LiberaMesa(tMesa* mesa)
     free(mesa);
 }
 
+void Espera()
+{
+    while(1)
+    {
+        ApagaLinha(28, 100);
+        printf(">");
+        if (getchar() == '0')
+        {
+            break;
+        }
+    }
+}

@@ -3,12 +3,17 @@
 * Contem funcoes referentes à estrutura carta e
 * à manipulaçao de listas do tipo carta.
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "carta.h"
 #include "graficos.h"
+
+//-----[Parametros das cartas]
+#define NADA 1
+#define PONTO 2
+#define TRUNFO 3
+#define BISCA 4
 
 tCarta* NovaCarta(int valor, int naipe)
 {
@@ -77,6 +82,152 @@ int BuscaPorNaipe(tListaCartas* cartas, int naipe)
     return 0;
 }
 
+int CartaTrunfo(tCarta* carta, tCarta* trunfo)
+{
+    if(NaipeCarta(carta) == NaipeCarta(trunfo))
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int CartaPonto(tCarta* carta, tCarta* trunfo)
+{
+    if(!CartaTrunfo(carta, trunfo) && ValorCarta(carta) >= 7 && ValorCarta(carta) <= 9)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int CartaBisca(tCarta* carta, tCarta* trunfo)
+{
+    if(!CartaTrunfo(carta, trunfo) && ValorCarta(carta) >= 10)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int CartaSemValor(tCarta* carta, tCarta* trunfo)
+{
+    if(!CartaBisca(carta, trunfo) && !CartaPonto(carta, trunfo) && !CartaTrunfo(carta, trunfo))
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int TemNadaLista(tListaCartas* cartas, tCarta* trunfo)
+{
+    if(TamListaCartas(cartas) != 0)
+    {
+        tCarta* aux = cartas -> lista;
+        while(aux != NULL)
+        {
+            if(CartaSemValor(aux, trunfo))
+            {
+                return 1;
+            }   
+            aux = aux -> proximo;
+        }
+    }
+    else
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int TemPontoLista(tListaCartas* cartas, tCarta* trunfo)
+{
+    if(TamListaCartas(cartas) != 0)
+    {
+        tCarta* aux = cartas -> lista;
+        while(aux != NULL)
+        {
+            if(CartaPonto(aux, trunfo))
+            {
+                return 1;
+            }   
+            aux = aux -> proximo;
+        }
+    }
+    return 0;
+}
+
+int TemTrunfoLista(tListaCartas* cartas, tCarta* trunfo)
+{
+    if(TamListaCartas(cartas) != 0)
+    {
+        tCarta* aux = cartas -> lista;
+        while(aux != NULL)
+        {
+            if(CartaTrunfo(aux, trunfo))
+            {
+                return 1;
+            }   
+            aux = aux -> proximo;
+        }
+    }
+    return 0;
+}
+
+int TemBiscaLista(tListaCartas* cartas, tCarta* trunfo)
+{
+    if(TamListaCartas(cartas) != 0)
+    {
+        tCarta* aux = cartas -> lista;
+        while(aux != NULL)
+        {
+            if(CartaBisca(aux, trunfo))
+            {
+                return 1;
+            }   
+            aux = aux -> proximo;
+        }
+    }
+    return 0;
+}
+
+tCarta* RetiraCartaEscolhida(tListaCartas* cartas, tCarta* trunfo, int param)
+{
+    tCarta *aux = cartas -> lista;
+    while(aux != NULL)
+    {
+        switch(param)
+        {
+            case NADA:
+                if(CartaSemValor(aux, trunfo))
+                {
+                    return RetiraCarta(cartas, PosicaoDaCarta(aux, cartas));
+                }
+                break;
+            case PONTO:
+                if(CartaPonto(aux, trunfo))
+                {
+                    return RetiraCarta(cartas, PosicaoDaCarta(aux, cartas));
+                }
+                break;
+            case TRUNFO:
+                if(CartaTrunfo(aux, trunfo))
+                {
+                    return RetiraCarta(cartas, PosicaoDaCarta(aux, cartas));
+                }
+                break;
+            case BISCA:
+                if(CartaBisca(aux, trunfo))
+                {
+                    return RetiraCarta(cartas, PosicaoDaCarta(aux, cartas));
+                }
+                break;
+        }
+        aux = aux -> proximo;
+    }
+
+    return RetiraCarta(cartas, 1);
+}
+
 void InsereCarta(tListaCartas* cartas, tCarta* carta)
 {
 	if(cartas -> lista == NULL)
@@ -93,16 +244,6 @@ void InsereCarta(tListaCartas* cartas, tCarta* carta)
 	}
 }
 
-void InicializaBaralho(tListaCartas* baralho)
-{
-    for(int i = 1;i <= 4;i++)
-	{
-		for(int j = 1;j <= 10;j++)
-		{
-			InsereCarta(baralho, NovaCarta(j + 1, i));
-		}
-	}
-}
 
 void ImprimeCarta(tCarta* carta)
 {
@@ -194,10 +335,7 @@ void LiberaLista(tListaCartas* cartas)
     free(cartas);
 }
 
-void Saca(tListaCartas* origem, tListaCartas* destino)
-{
-    InsereCarta(destino, RetiraCarta(origem, 1));
-}
+
 
 
 

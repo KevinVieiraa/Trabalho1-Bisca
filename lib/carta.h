@@ -27,13 +27,29 @@ int ValorCarta(tCarta* carta);
 
 int NaipeCarta(tCarta* carta);
 
-int PosicaoDaCarta(tCarta* carta, tListaCartas* cartas);
+void InsereCarta(tListaCartas* cartas, tCarta* carta);
 
 int BuscaPorNaipe(tListaCartas* cartas, int naipe);
 
-void InsereCarta(tListaCartas* cartas, tCarta* carta);
+int CartaTrunfo(tCarta* carta, tCarta* trunfo);
 
-void InicializaBaralho(tListaCartas* baralho);
+int CartaPonto(tCarta* carta, tCarta* trunfo);
+
+int CartaBisca(tCarta* carta, tCarta* trunfo);
+
+int CartaSemValor(tCarta* carta, tCarta* trunfo);
+
+int TemNadaLista(tListaCartas* cartas, tCarta* trunfo);
+
+int TemPontoLista(tListaCartas* cartas, tCarta* trunfo);
+
+int TemTrunfoLista(tListaCartas* cartas, tCarta* trunfo);
+
+int TemBiscaLista(tListaCartas* cartas, tCarta* trunfo);
+
+tCarta* RetiraCartaEscolhida(tListaCartas* cartas, tCarta* trunfo, int param);
+
+int PosicaoDaCarta(tCarta* carta, tListaCartas* cartas);
 
 void ImprimeCarta(tCarta* carta);
 
@@ -46,6 +62,4 @@ tCarta* RetiraCarta(tListaCartas* cartas, int pos);
 void Embaralha(tListaCartas* cartas);
 
 void LiberaLista(tListaCartas* cartas);
-
-void Saca(tListaCartas* baralho, tListaCartas* maoDestino);
 #endif

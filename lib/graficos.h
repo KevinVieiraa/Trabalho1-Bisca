@@ -11,114 +11,69 @@ typedef struct listaJogadores tListaJogadores;
 
 typedef struct mesa tMesa;
 
-/*
-*  > Apaga uma linha
-*  - Inputs: linha a ser apagada, tamanho do espaco
-*  - Output: linha apagada
-*  - Pre-condicao: nenhuma
-*  - Pos-condicao: linha apagada e cursor no comeco da linha
-*/
+// > Apaga uma linha informada no terminal
 void ApagaLinha(int linha, int tamanho);
 
-/*
-*  > Define a posicao do cursor
-* - Inputs: coordenada x e y do cursor
-* - Output: cursor posicionado em x, y
-* - Pre-condicao: nenhuma
-* - Pos-condicao: cursor posicionado na coordenada informada
-*/
+// > Posiciona o cursor numa determinada posicao do terminal
 void CursorPosicao(int XPos, int YPos);
 
-/*
-*  > Converte o valor da carta para um char correspondente
-* - Inputs: um valor a ser convertido
-* - Output: o valor correspondente em char
-* - Pre-condicao: o numero informado deve estar entre 2 e 11
-* - Pos-condicao: resultado convertido entre '2' e 'A'
-*/
+// > Converte o valor da carta (2-11) em seu correspondente em char ('2' - 'A')
 char ConverteValor(int valorCarta);
 
-/*
-*  > Retorna o caractere especial do naipe
-* - Inputs: um valor a ser convertido
-* - Output: o valor correspondente em forma de simbolo especial
-* - Pre-condicao: o valor informado deve estar entre 1 e 4
-* - Pos-condicao: um ponteiro contendo o valor correspondente em unicode do simbolo
-*/
+// > Retorna em formato unicode o naipe informado
 char* RetornaNaipe(int naipe);
 
-/*
-*  > Desenha uma janela com borda dupla
-* - Inputs: a altura e largura da janela e as coordenadas x e y onde sera desenhado
-* - Output: a janela de tamanho b e altura h desenhado na posicao (x, y)
-* - Pre-condicao: valores informados apenas positivos
-* - Pos-condicao: janela desenhada
-*/
+// > Desenha uma janela com o caractere do tipo 'linha dupla'
 void DesenhaBordaDupla(int x, int y, int posX, int posY);
 
-/* 
-*  > Desenha uma caixa com uma borda simples
-* - Inputs: a altura e largura da caixa e as coordenadas x e y onde sera desenhado
-* - Output: a caixa de tamanho b e altura h desenhado na posicao (x, y)
-* - Pre-condicao: valores informados apenas positivos
-* - Pos-condicao: a caixa desenhada
-*/
+// > Desenha uma janela com o caractere do tipo 'linha simples'
 void DesenhaCaixa(int x, int y, int tamX, int tamY);
 
-/*
-*  > Desenha uma carta com as informacoes
-* - Inputs: o naipe da carta, o valor contido e as coordenadas x e y onde sera desenhado
-* - Output: uma carta de tamanho fix com o naipe e o simbolo desenhados na posicao (x, y)
-* - Pre-condicao: o naipe deve estar entre 1 e 4, o valor deve estar entre 2 e 11 e as coordenadas devem ser positivas
-* - Pos-condicao: a carta desenhada
-*/
+// > Desenha uma carta com naipe e valor informado
 void DesenhaCarta(int naipeCarta, int valor, int xInicial, int yInicial);
 
-void DesenhaIndicesCartas();
-
-/*
-*  > Desenha os itens da janela "menu"
-* - Inputs: nenhum
-* - Output: 
-* - Pre-condicao: nenhum
-* - Pos-condicao: 
-*/
+// > Desenha os itens especificos do estado "Menu"
 void DesenhaItensMenu();
 
+// > Desenha os itens específicos do estado "Ajuda"
 void DesenhaItensAjuda();
 
+// > Desenha os itens específicos do estado "Config"
 void DesenhaItensConfig();
 
+// > Desenha os itens especificos do estado "Jogo"
 void DesenhaItensJogo();
 
+// > Desenha a representação da primeira carta do baralho ou a primeira carta.
 void DesenhaBaralho(tListaCartas* baralho, char* param);
 
+// > Desenha as mãos de todos os jogadores
 void DesenhaMaos(tListaJogadores* jogadores, int numJogadores, char* param);
 
+// > Desenha um espaço em branco (necessario para o valgrind)
 void DesenhaEspaco(int altura);
 
+// > Desenha as pontuações dos jogadores
 void DesenhaPontuacao(tListaJogadores* jogadores);
 
-/*
-*  > Apaga uma area do terminal informada
-* - Inputs: as coordenadas (x, y) iniciais e a largura e altura da area a ser apagada
-* - Output: uma area do terminal em branco
-* - Pre-condicao: apenas valores positivos
-* - Pos-condicao: 
-*/
+// > Apaga uma área do terminal informada
 void ApagaArea(int xInic, int yInic, int tamX, int tamY);
 
-char** NovoChat();
-
+// > Imprime todas as mensagens do chat
 void ImprimeChat(char chat[5][50]);
 
+// > Atualiza o chat, inserindo uma nova mensagem
 void AtualizaChat(char chat[5][50], char string[50]);
 
+// > Desenha uma mão de um jogador
 void DesenhaMao(tListaCartas* mao, int posX, int posY, char* param);
 
+// > Mostra, no chat, o baralho completo do jogo, na ordem em que ele esta
 void MostraBaralho(tListaCartas* baralho, int nJogadores);
 
+// > Desenha a representação da carta definida como trunfo no inicio da partida
 void DesenhaTrunfo(tCarta* trunfo);
 
+// > Desenha as cartas depositadas na mesa pelos jogadores
 void DesenhaMesa(tListaCartas* monte);
 #endif
