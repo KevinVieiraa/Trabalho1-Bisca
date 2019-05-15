@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     *  Estado pre-jogo, nele sao definidas informacoes como quantidade
     *  de jogadores e dificuldade
     * 
-    * Jogo:
+    * Jogo: (linha ~ 190)
     *  Onde ocorre a real logica do jogo, como a inicializacao das
     *  estruturas utilizadas, a distribuicao de cartas para cada jogador, etc...
     *  Logo em seguida, se inicia o loop que ira se manter ate o fim da partida.
@@ -147,26 +147,26 @@ int main(int argc, char *argv[])
         if(estado == EJOGO)
         {
             tJogador *jogadorAtual;//Aponta para o jogador da vez
-            tJogador *jogadorVencedor;
+            tJogador *jogadorVencedor;//Aponta o jogador que venceu a partida
             tCarta *retirada; //Ponteiro temporario para salvar a carta retirada pelo jogador
-            char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} };
+            char chat[5][50] = { {" "}, {" "}, {" "}, {" "}, {" "} }; // Inicializa o chat em branco
             char tmp[50]; //Guarda o valor temporario da mensagem a ser exibida no chat
             char comando;
             
-            mesa = InicializaMesa();
+            mesa = InicializaMesa(); //Inicializa a mesa
             Embaralha(mesa -> baralho);
             sprintf(tmp, "Embaralhando...");
             AtualizaChat(chat, tmp);
             ImprimeChat(chat);
 
-            lJogadores = NovaListaJogadores();
+            lJogadores = NovaListaJogadores();//Inicializa os jogadores
             AdicionaJogadores(lJogadores, mesa -> baralho, nJogadores);
             sprintf(tmp, "Distribuindo cartas...");
             AtualizaChat(chat, tmp);
             ImprimeChat(chat);
 
-            jogadorAtual = DecidePrimeiroJogador(lJogadores);
-            CortaBaralho(mesa);
+            jogadorAtual = DecidePrimeiroJogador(lJogadores); //Escolhe quem sera o primeiro a jogar
+            CortaBaralho(mesa); //Decide o trunfo da partida
 
             sprintf(tmp, "O Jogador %d cortou o baralho", IdJogador(jogadorAtual));
             AtualizaChat(chat, tmp);
@@ -174,6 +174,7 @@ int main(int argc, char *argv[])
             AtualizaChat(chat, tmp);
             ImprimeChat(chat);
             
+            //Funcoes que desenham o baralho, maos etc
             DesenhaItensJogo(lJogadores);
             DesenhaBaralho(mesa -> baralho, argv[1]);
             DesenhaTrunfo(mesa -> trunfo);
@@ -184,10 +185,10 @@ int main(int argc, char *argv[])
             sprintf(tmp, "Iniciando partida... (0)");
             AtualizaChat(chat, tmp);
             ImprimeChat(chat);
-            Espera();
+            Espera(); //Aguarda o comando 0 para iniciar o jogo
 
             while(estado == EJOGO)
-            {
+            { 
                 if(TamListaCartas(jogadorAtual -> mao) == 0)
                 {
                     sprintf(tmp, "Fim de jogo!");
@@ -331,7 +332,7 @@ int main(int argc, char *argv[])
                 if(TamListaCartas(mesa -> monte) == nJogadores)
                 {
                     DecideRodada(mesa, lJogadores);
-                    jogadorAtual = lJogadores -> lista;
+                    jogadorAtual = lJogadores -> lista; //O primeiro a jogar passa a ser quem ganhou a ultima rodada
                     CalculaPontos(jogadorAtual);
                     DesenhaPontuacao(lJogadores);
 
@@ -340,7 +341,7 @@ int main(int argc, char *argv[])
                     ImprimeChat(chat);
                     Espera();
                     
-                    if(TamListaCartas(mesa -> baralho) != 0)
+                    if(TamListaCartas(mesa -> baralho) != 0) //Distribui as cartas se houver
                     {
                         sprintf(tmp, "Distribuindo cartas...");
                         AtualizaChat(chat, tmp);
@@ -354,7 +355,7 @@ int main(int argc, char *argv[])
                 }
             }
 
-            if(estado == EJOGO)
+            if(estado == EJOGO) //Se o jogo encerrou de modo "natural"(Sem ser através do comando 's'), ele exibe o vencedor e espera para voltar ao menu
             {
                 sprintf(tmp, "Voltar ao menu (0)");
                 AtualizaChat(chat, tmp);
