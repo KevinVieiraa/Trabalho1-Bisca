@@ -32,8 +32,10 @@ int main(int argc, char *argv[])
 
     srand(time(NULL));
     if(argc != 2)
-	printf("Parametros invalidos (./bisca \"parametro\")");
+    {
+	printf("Parametros invalidos (./bisca \"parametro\")\n");
         return 0;
+    }
 	
     DesenhaEspaco(ALTURA + 25);//Funcao necessaria para exibicao dos valores do valgrind (desnecessario se nao usar o valgrind)
 
