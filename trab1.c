@@ -30,7 +30,10 @@ int main(int argc, char *argv[])
     int nJogadores;
     char opcao;
 
-	srand(time(NULL));
+    srand(time(NULL));
+    if(argc != 2)
+	printf("Parametros invalidos (./bisca \"parametro\")");
+        return 0;
 	
     DesenhaEspaco(ALTURA + 25);//Funcao necessaria para exibicao dos valores do valgrind (desnecessario se nao usar o valgrind)
 
