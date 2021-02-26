@@ -9,5 +9,5 @@
 
 ### Execução:
   - O programa é executado através do comando **./bisca [parametro]**
-  - O valor "*parametro*" deve ser 1 caso o jogo vá ser executado em modo *debug*. Caso contrário, basta ser outro valor diferente de vazio.
+  - O valor "*parametro*" deve ser 1 caso o jogo vá ser executado em modo *debug*. Caso contrário, 0.
     - **Modo Debug:** Possui opções especiais para fins de avaliação que não estao presentes em um jogo "comum", como por exemplo mostrar o baralho, embaralhar, mostrar as cartas de outros jogadores, etc...
