@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
     char opcao;
 
     srand(time(NULL));
-    if(argc != 2)
+    if(argc != 2 && (atoi(argv[1]) != 0 || atoi(argv[1]) != 1))
     {
-	printf("Parametros invalidos (./bisca \"parametro\")\n");
+	printf("Parametros invalidos\n Execute: ./bisca <modo_de_jogo>\n<modo_de_jogo>: 0 - modo Debug, 1 - modo normal");
         return 0;
     }
 	
